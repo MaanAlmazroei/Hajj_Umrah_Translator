@@ -9,11 +9,12 @@ const HajjUmrahTranslator = () => {
   const [targetLanguage, setTargetLanguage] = useState('ar');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [savedApiKey, setSavedApiKey] = useState('');
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [activeTab, setActiveTab] = useState('translate');
+
+  // API key
+  const API_KEY = 'AIzaSyB0178Hza4hPsdUIka1b7qT5bXoHCYS_c4';
 
   // Common phrases for Hajj and Umrah
   const commonPhrases = [
@@ -43,14 +44,8 @@ const HajjUmrahTranslator = () => {
     { code: 'de', name: 'German' },
   ];
 
-  // Load saved API key and translation history from localStorage
+  // Load translation history from localStorage
   useEffect(() => {
-    const storedApiKey = localStorage.getItem('geminiApiKey');
-    if (storedApiKey) {
-      setSavedApiKey(storedApiKey);
-      setApiKey(storedApiKey);
-    }
-
     const storedHistory = localStorage.getItem('translationHistory');
     if (storedHistory) {
       setHistory(JSON.parse(storedHistory));
@@ -72,57 +67,53 @@ const HajjUmrahTranslator = () => {
     localStorage.setItem('translationFavorites', JSON.stringify(favorites));
   }, [favorites]);
 
-  // Function to save API key
-  const saveApiKey = () => {
-    localStorage.setItem('geminiApiKey', apiKey);
-    setSavedApiKey(apiKey);
-  };
-
   // Function to handle translation
   const translateText = async () => {
     if (!inputText.trim()) {
       setError('Please enter text to translate');
       return;
     }
-
-    if (!savedApiKey) {
-      setError('Please save your Gemini API key first');
-      return;
-    }
-
+  
     setIsLoading(true);
     setError('');
-
+  
     try {
-        const response = await axios.post(
-            `/api/gemini/models/gemini-pro:generateContent?key=${savedApiKey}`,
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
+        {
+          contents: [
             {
-              contents: [
+              parts: [
                 {
-                  parts: [
-                    {
-                      text: prompt
-                    }
-                  ]
+                  text: `Translate the following text from ${sourceLanguage} to ${targetLanguage}. Provide ONLY the direct translation without any explanations, examples, or additional context. Do not include any markdown formatting, bullet points, or explanatory text:\n${inputText}`
                 }
               ]
             }
-          );
-
-      // Extract the translation from response
+          ]
+        }
+      );
+  
+      // استخراج الترجمة
       const translation = response.data.candidates[0].content.parts[0].text;
-  setOutputText(translation);
+      // تنظيف النص من أي علامات markdown أو نصوص إضافية
+      const cleanTranslation = translation
+        .replace(/[\*\#\-\_\`]/g, '') // إزالة علامات markdown
+        .replace(/^\s*[\n\r]+/g, '') // إزالة الأسطر الفارغة في البداية
+        .replace(/[\n\r]+\s*$/g, '') // إزالة الأسطر الفارغة في النهاية
+        .trim(); // إزالة المسافات الزائدة
 
-      // Add to history
+      setOutputText(cleanTranslation);
+  
+      // إضافة للـ History
       const newTranslation = {
         id: Date.now(),
         sourceText: inputText,
-        translatedText: translation,
+        translatedText: cleanTranslation,
         sourceLanguage,
         targetLanguage,
         timestamp: new Date().toISOString()
       };
-
+  
       setHistory(prevHistory => [newTranslation, ...prevHistory.slice(0, 19)]);
     } catch (err) {
       console.error('Translation error:', err);
@@ -131,7 +122,7 @@ const HajjUmrahTranslator = () => {
       setIsLoading(false);
     }
   };
-
+  
   // Helper function to get language name from code
   const getLanguageName = (code) => {
     const language = languages.find(lang => lang.code === code);
@@ -157,7 +148,13 @@ const HajjUmrahTranslator = () => {
 
   // Function to handle common phrase selection
   const handlePhraseSelect = (phrase) => {
-    setInputText(phrase[sourceLanguage] || phrase.en);
+    if (sourceLanguage === 'ar') {
+      setInputText(phrase.ar);
+      setOutputText(phrase.en);
+    } else {
+      setInputText(phrase.en);
+      setOutputText(phrase.ar);
+    }
   };
 
   // Function to use text-to-speech
@@ -176,6 +173,97 @@ const HajjUmrahTranslator = () => {
   const clearHistory = () => {
     setHistory([]);
     localStorage.removeItem('translationHistory');
+  };
+
+  // Add CSS styles at the top of the component
+  const styles = {
+    translatorContainer: {
+      padding: '20px',
+      maxWidth: '1200px',
+      margin: '0 auto',
+    },
+    languageSelectors: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '15px',
+      marginBottom: '20px',
+    },
+    select: {
+      padding: '10px 15px',
+      borderRadius: '8px',
+      border: '1px solid #ddd',
+      fontSize: '16px',
+      width: '200px',
+      backgroundColor: '#fff',
+    },
+    swapBtn: {
+      padding: '8px 12px',
+      borderRadius: '50%',
+      border: '1px solid #ddd',
+      backgroundColor: '#fff',
+      cursor: 'pointer',
+      fontSize: '20px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: 'all 0.3s ease',
+    },
+    translationBoxes: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '40px',
+      marginBottom: '20px',
+      padding: '20px',
+    },
+    textBox: {
+      width: '100%',
+      height: '200px',
+      padding: '15px',
+      borderRadius: '8px',
+      border: '2px solid #ddd',
+      fontSize: '16px',
+      resize: 'none',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+      outline: 'none',
+      transition: 'border-color 0.3s ease',
+      backgroundColor: '#fafafa',
+      lineHeight: '1.5',
+      overflowY: 'auto',
+      margin: '10px 0',
+    },
+    textActions: {
+      display: 'flex',
+      gap: '10px',
+      marginTop: '10px',
+    },
+    actionButton: {
+      padding: '8px 15px',
+      borderRadius: '6px',
+      border: 'none',
+      backgroundColor: '#f0f0f0',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '5px',
+      transition: 'all 0.3s ease',
+    },
+    translateBtn: {
+      width: '100%',
+      padding: '15px',
+      borderRadius: '8px',
+      border: 'none',
+      backgroundColor: '#4CAF50',
+      color: 'white',
+      fontSize: '18px',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+    },
+    errorMessage: {
+      color: '#ff0000',
+      textAlign: 'center',
+      marginTop: '10px',
+    },
   };
 
   return (
@@ -219,9 +307,10 @@ const HajjUmrahTranslator = () => {
       </div>
 
       {activeTab === 'translate' && (
-        <div className="translator-container">
-          <div className="language-selectors">
+        <div style={styles.translatorContainer}>
+          <div style={styles.languageSelectors}>
             <select 
+              style={styles.select}
               value={sourceLanguage} 
               onChange={(e) => setSourceLanguage(e.target.value)}
             >
@@ -232,11 +321,15 @@ const HajjUmrahTranslator = () => {
               ))}
             </select>
             
-            <button onClick={swapLanguages} className="swap-btn">
+            <button 
+              onClick={swapLanguages} 
+              style={styles.swapBtn}
+            >
               ⇄
             </button>
             
             <select 
+              style={styles.select}
               value={targetLanguage} 
               onChange={(e) => setTargetLanguage(e.target.value)}
             >
@@ -248,47 +341,71 @@ const HajjUmrahTranslator = () => {
             </select>
           </div>
 
-          <div className="translation-boxes">
-            <div className="input-box">
+          <div style={styles.translationBoxes}>
+            <div>
               <textarea
+                style={{
+                  ...styles.textBox,
+                  backgroundColor: '#ffffff',
+                }}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={`Enter text in ${getLanguageName(sourceLanguage)}`}
-                rows={5}
+                dir={sourceLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
-              <div className="text-actions">
-                <button onClick={() => speakText(inputText, sourceLanguage)}>
+              <div style={styles.textActions}>
+                <button 
+                  style={styles.actionButton}
+                  onClick={() => speakText(inputText, sourceLanguage)}
+                >
                   🔊 Listen
                 </button>
-                <button onClick={() => setInputText('')}>
+                <button 
+                  style={styles.actionButton}
+                  onClick={() => setInputText('')}
+                >
                   ✕ Clear
                 </button>
               </div>
             </div>
 
-            <div className="output-box">
+            <div>
               <textarea
+                style={{
+                  ...styles.textBox,
+                  backgroundColor: '#ffffff',
+                  cursor: 'default',
+                }}
                 value={outputText}
                 readOnly
                 placeholder={`Translation in ${getLanguageName(targetLanguage)}`}
-                rows={5}
+                dir={targetLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
-              <div className="text-actions">
-                <button onClick={() => speakText(outputText, targetLanguage)}>
+              <div style={styles.textActions}>
+                <button 
+                  style={styles.actionButton}
+                  onClick={() => speakText(outputText, targetLanguage)}
+                >
                   🔊 Listen
                 </button>
-                <button onClick={() => copyToClipboard(outputText)}>
+                <button 
+                  style={styles.actionButton}
+                  onClick={() => copyToClipboard(outputText)}
+                >
                   📋 Copy
                 </button>
                 {outputText && (
-                  <button onClick={() => toggleFavorite({
-                    id: Date.now(),
-                    sourceText: inputText,
-                    translatedText: outputText,
-                    sourceLanguage,
-                    targetLanguage,
-                    timestamp: new Date().toISOString()
-                  })}>
+                  <button 
+                    style={styles.actionButton}
+                    onClick={() => toggleFavorite({
+                      id: Date.now(),
+                      sourceText: inputText,
+                      translatedText: outputText,
+                      sourceLanguage,
+                      targetLanguage,
+                      timestamp: new Date().toISOString()
+                    })}
+                  >
                     ⭐ Favorite
                   </button>
                 )}
@@ -297,14 +414,18 @@ const HajjUmrahTranslator = () => {
           </div>
 
           <button 
+            style={{
+              ...styles.translateBtn,
+              opacity: isLoading ? 0.7 : 1,
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+            }}
             onClick={translateText} 
-            disabled={isLoading || !inputText.trim() || !savedApiKey}
-            className="translate-btn"
+            disabled={isLoading || !inputText.trim()}
           >
             {isLoading ? 'Translating...' : 'Translate'}
           </button>
 
-          {error && <div className="error-message">{error}</div>}
+          {error && <div style={styles.errorMessage}>{error}</div>}
         </div>
       )}
 
@@ -432,24 +553,7 @@ const HajjUmrahTranslator = () => {
 
       {activeTab === 'settings' && (
         <div className="settings-container">
-          <h2>API Settings</h2>
-          <div className="api-key-section">
-            <p>Enter your Gemini API key to enable translations:</p>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Enter Gemini API Key"
-              className="api-key-input"
-            />
-            <button onClick={saveApiKey} className="save-api-btn">
-              Save API Key
-            </button>
-            {savedApiKey && (
-              <p className="api-status">API Key is saved. Translation is enabled.</p>
-            )}
-          </div>
-          
+          <h2>Settings</h2>
           <div className="settings-info">
             <h3>About Hajj & Umrah Translator</h3>
             <p>This application is specifically designed to help pilgrims communicate effectively during Hajj and Umrah.</p>
@@ -461,7 +565,6 @@ const HajjUmrahTranslator = () => {
               <li>Text-to-speech capability for better communication</li>
               <li>Translation history to recall previous conversations</li>
             </ul>
-            <p>To get started, please enter your Gemini API key above.</p>
           </div>
         </div>
       )}
