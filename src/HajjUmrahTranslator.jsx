@@ -95,7 +95,7 @@ const HajjUmrahTranslator = () => {
 
     try {
         const response = await axios.post(
-            `/api/gemini/models/gemini-pro:generateContent?key=AIzaSyB0178Hza4hPsdUIka1b7qT5bXoHCYS_c4`,
+            `/api/gemini/models/gemini-pro:generateContent?key=${savedApiKey}`,
             {
               contents: [
                 {
