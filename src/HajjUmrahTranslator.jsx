@@ -1,6 +1,7 @@
 // HajjUmrahTranslator.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const HajjUmrahTranslator = () => {
   const [inputText, setInputText] = useState("");
@@ -48,27 +49,49 @@ const HajjUmrahTranslator = () => {
     { code: "de", name: "German" },
   ];
 
-  // Load translation history from localStorage
+  // Load translation history from cookies
   useEffect(() => {
-    const storedHistory = localStorage.getItem("translationHistory");
+    const storedHistory = Cookies.get("translationHistory");
     if (storedHistory) {
-      setHistory(JSON.parse(storedHistory));
+      try {
+        setHistory(JSON.parse(storedHistory));
+      } catch (error) {
+        console.error("Error parsing history from cookies:", error);
+        setHistory([]);
+      }
     }
 
-    const storedFavorites = localStorage.getItem("translationFavorites");
+    const storedFavorites = Cookies.get("translationFavorites");
     if (storedFavorites) {
-      setFavorites(JSON.parse(storedFavorites));
+      try {
+        setFavorites(JSON.parse(storedFavorites));
+      } catch (error) {
+        console.error("Error parsing favorites from cookies:", error);
+        setFavorites([]);
+      }
     }
   }, []);
 
-  // Save translation history to localStorage
+  // Save translation history to cookies
   useEffect(() => {
-    localStorage.setItem("translationHistory", JSON.stringify(history));
+    if (history.length > 0) {
+      Cookies.set("translationHistory", JSON.stringify(history), {
+        expires: 365,
+      }); // Cookie expires in 1 year
+    } else {
+      Cookies.remove("translationHistory");
+    }
   }, [history]);
 
-  // Save favorites to localStorage
+  // Save favorites to cookies
   useEffect(() => {
-    localStorage.setItem("translationFavorites", JSON.stringify(favorites));
+    if (favorites.length > 0) {
+      Cookies.set("translationFavorites", JSON.stringify(favorites), {
+        expires: 365,
+      }); // Cookie expires in 1 year
+    } else {
+      Cookies.remove("translationFavorites");
+    }
   }, [favorites]);
 
   // Function to handle translation
@@ -105,20 +128,31 @@ const HajjUmrahTranslator = () => {
 
       setOutputText(cleanTranslation);
 
-      // إضافة للـ History
-      const newTranslation = {
-        id: Date.now(),
-        sourceText: inputText,
-        translatedText: cleanTranslation,
-        sourceLanguage,
-        targetLanguage,
-        timestamp: new Date().toISOString(),
-      };
+      // Check if this exact translation already exists in history
+      const isDuplicate = history.some(
+        (item) =>
+          item.sourceText === inputText &&
+          item.translatedText === cleanTranslation &&
+          item.sourceLanguage === sourceLanguage &&
+          item.targetLanguage === targetLanguage
+      );
 
-      setHistory((prevHistory) => [
-        newTranslation,
-        ...prevHistory.slice(0, 19),
-      ]);
+      // Only add to history if it's not a duplicate
+      if (!isDuplicate) {
+        const newTranslation = {
+          id: Date.now(),
+          sourceText: inputText,
+          translatedText: cleanTranslation,
+          sourceLanguage,
+          targetLanguage,
+          timestamp: new Date().toISOString(),
+        };
+
+        setHistory((prevHistory) => [
+          newTranslation,
+          ...prevHistory.slice(0, 19),
+        ]);
+      }
     } catch (err) {
       console.error("Translation error:", err);
       setError("Failed to translate. Please check your API key and try again.");
@@ -176,7 +210,7 @@ const HajjUmrahTranslator = () => {
   // Function to clear history
   const clearHistory = () => {
     setHistory([]);
-    localStorage.removeItem("translationHistory");
+    Cookies.remove("translationHistory");
   };
 
   // Add CSS styles at the top of the component
@@ -306,7 +340,7 @@ const HajjUmrahTranslator = () => {
           className={`tab ${activeTab === "settings" ? "active" : ""}`}
           onClick={() => setActiveTab("settings")}
         >
-          Settings
+          About
         </button>
       </div>
 
@@ -595,7 +629,7 @@ const HajjUmrahTranslator = () => {
 
       {activeTab === "settings" && (
         <div className="settings-container">
-          <h2>Settings</h2>
+          <h2>About</h2>
           <div className="settings-info">
             <h3>About Hajj & Umrah Translator</h3>
             <p>
