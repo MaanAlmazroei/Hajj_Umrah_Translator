@@ -185,6 +185,8 @@ const HajjUmrahTranslator = () => {
     if (history.length > 0) {
       Cookies.set("translationHistory", JSON.stringify(history), {
         expires: 365,
+        secure: true,
+        sameSite: "Strict",
       }); // Cookie expires in 1 year
     } else {
       Cookies.remove("translationHistory");
@@ -196,6 +198,8 @@ const HajjUmrahTranslator = () => {
     if (favorites.length > 0) {
       Cookies.set("translationFavorites", JSON.stringify(favorites), {
         expires: 365,
+        secure: true,
+        sameSite: "Strict",
       }); // Cookie expires in 1 year
     } else {
       Cookies.remove("translationFavorites");
@@ -209,6 +213,15 @@ const HajjUmrahTranslator = () => {
       return;
     }
 
+    // Input length validation
+    const MAX_INPUT_LENGTH = 500;
+    if (inputText.length > MAX_INPUT_LENGTH) {
+      setError(
+        `Input too long. Maximum allowed is ${MAX_INPUT_LENGTH} characters.`
+      );
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -218,7 +231,31 @@ const HajjUmrahTranslator = () => {
           {
             parts: [
               {
-                text: `Translate the following text from ${sourceLanguage} to ${targetLanguage}. Provide ONLY the direct translation without any explanations, examples, or additional context. Do not include any markdown formatting, bullet points, or explanatory text:\n${inputText}`,
+                text: `Act as an expert Islamic translator for Hajj/Umrah. Translate this text from ${sourceLanguage} to ${targetLanguage} with:
+
+1. **Terminology Rules**:
+- Preserve in original Arabic:
+  * Quranic verses/hadith
+  * Duas (e.g. "Labbayk Allahumma Labbayk")
+  * Ritual names (Tawaf, Sa'i, Wuquf)
+  * Holy sites (Mina, Arafat, Jamarat)
+- Translate other text naturally
+
+2. **Format Requirements**:
+- Only output the translation
+- No explanations or notes
+- No bullet points or formatting
+- Keep Arabic script for Islamic terms
+
+3. **Special Cases**:
+- Times: Use prayer times ("after Dhuhr")
+- Directions: Use pilgrim terms ("near Maqam Ibrahim")
+- Standardize spellings ("Makkah" not "Mecca")
+
+4. **For not recognized words**:
+-You must stick to one way of saying incorrect word
+
+Text to translate: "${inputText}"`,
               },
             ],
           },
@@ -263,7 +300,16 @@ const HajjUmrahTranslator = () => {
       }
     } catch (err) {
       console.error("Translation error:", err);
-      setError("Failed to translate. Please check your API key and try again.");
+
+      if (err.response && err.response.status === 401) {
+        setError("Authorization failed. Please check your API key.");
+      } else if (err.response && err.response.status === 429) {
+        setError("Too many requests. Please wait and try again.");
+      } else if (err.message.includes("Network Error")) {
+        setError("Network error. Please check your internet connection.");
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -300,9 +346,19 @@ const HajjUmrahTranslator = () => {
 
   // Function to use text-to-speech
   const speakText = (text, language) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language;
-    window.speechSynthesis.speak(utterance);
+    if (!text || !text.trim()) {
+      setError("Cannot speak empty text.");
+      return;
+    }
+
+    try {
+      const utterance = new SpeechSynthesisUtterance(text.trim());
+      utterance.lang = language;
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.error("TTS Error:", err);
+      setError("Unable to play audio. Please try again.");
+    }
   };
 
   // Function to copy text to clipboard
