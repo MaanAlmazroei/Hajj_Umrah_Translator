@@ -13,6 +13,7 @@ const HajjUmrahTranslator = () => {
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [activeTab, setActiveTab] = useState("translate");
+  const [selectedPhraseLanguage, setSelectedPhraseLanguage] = useState("en");
 
   // API key
   const API_URL = process.env.REACT_APP_API_URL;
@@ -20,19 +21,126 @@ const HajjUmrahTranslator = () => {
 
   // Common phrases for Hajj and Umrah
   const commonPhrases = [
-    { en: "Where is the Kaaba?", ar: "أين الكعبة؟" },
-    { en: "How do I perform Tawaf?", ar: "كيف أؤدي الطواف؟" },
-    { en: "Where is the nearest prayer area?", ar: "أين أقرب مكان للصلاة؟" },
-    { en: "I need water", ar: "أحتاج إلى ماء" },
+    {
+      en: "Where is the Kaaba?",
+      ar: "أين الكعبة؟",
+      ur: "کعبہ کہاں ہے؟",
+      hi: "काबा कहाँ है?",
+      id: "Di mana Ka'bah?",
+      ms: "Di manakah Kaabah?",
+      tr: "Kabe nerede?",
+      fa: "کعبه کجاست؟",
+      fr: "Où est la Kaaba ?",
+      de: "Wo ist die Kaaba?",
+    },
+    {
+      en: "How do I perform Tawaf?",
+      ar: "كيف أؤدي الطواف؟",
+      ur: "طواف کیسے کریں؟",
+      hi: "तवाफ कैसे करें?",
+      id: "Bagaimana cara melakukan Tawaf?",
+      ms: "Bagaimana cara melakukan Tawaf?",
+      tr: "Tavaf nasıl yapılır?",
+      fa: "چگونه طواف کنم؟",
+      fr: "Comment effectuer le Tawaf ?",
+      de: "Wie führe ich den Tawaf durch?",
+    },
+    {
+      en: "Where is the nearest prayer area?",
+      ar: "أين أقرب مكان للصلاة؟",
+      ur: "قریب ترین نماز کی جگہ کہاں ہے؟",
+      hi: "निकटतम प्रार्थना स्थल कहाँ है?",
+      id: "Di mana tempat shalat terdekat?",
+      ms: "Di manakah tempat solat yang terdekat?",
+      tr: "En yakın namaz alanı nerede?",
+      fa: "نزدیک‌ترین محل نماز کجاست؟",
+      fr: "Où est la zone de prière la plus proche ?",
+      de: "Wo ist der nächste Gebetsbereich?",
+    },
+    {
+      en: "I need water",
+      ar: "أحتاج إلى ماء",
+      ur: "مجھے پانی چاہیے",
+      hi: "मुझे पानी चाहिए",
+      id: "Saya butuh air",
+      ms: "Saya perlukan air",
+      tr: "Suya ihtiyacım var",
+      fa: "من به آب نیاز دارم",
+      fr: "J'ai besoin d'eau",
+      de: "Ich brauche Wasser",
+    },
     {
       en: "Where can I find Zamzam water?",
       ar: "أين يمكنني الحصول على ماء زمزم؟",
+      ur: "زمزم کا پانی کہاں سے مل سکتا ہے؟",
+      hi: "ज़मज़म का पानी कहाँ मिल सकता है?",
+      id: "Di mana saya bisa mendapatkan air Zamzam?",
+      ms: "Di mana saya boleh mendapatkan air Zamzam?",
+      tr: "Zemzem suyunu nereden bulabilirim?",
+      fa: "کجا می‌توانم آب زمزم پیدا کنم؟",
+      fr: "Où puis-je trouver de l'eau de Zamzam ?",
+      de: "Wo finde ich Zamzam-Wasser?",
     },
-    { en: "How do I get to Mina?", ar: "كيف أصل إلى منى؟" },
-    { en: "Which way to Arafat?", ar: "أي طريق إلى عرفات؟" },
-    { en: "I need medical assistance", ar: "أحتاج إلى مساعدة طبية" },
-    { en: "Where is the nearest bathroom?", ar: "أين أقرب دورة مياه؟" },
-    { en: "How much does this cost?", ar: "كم تكلفة هذا؟" },
+    {
+      en: "How do I get to Mina?",
+      ar: "كيف أصل إلى منى؟",
+      ur: "منیٰ تک کیسے پہنچوں؟",
+      hi: "मिना तक कैसे पहुंचें?",
+      id: "Bagaimana cara ke Mina?",
+      ms: "Bagaimana cara ke Mina?",
+      tr: "Mina'ya nasıl giderim?",
+      fa: "چگونه به منا بروم؟",
+      fr: "Comment aller à Mina ?",
+      de: "Wie komme ich nach Mina?",
+    },
+    {
+      en: "Which way to Arafat?",
+      ar: "أي طريق إلى عرفات؟",
+      ur: "عرفات کا راستہ کون سا ہے؟",
+      hi: "अरफात का रास्ता कौन सा है?",
+      id: "Jalan mana yang menuju Arafah?",
+      ms: "Jalan mana yang menuju ke Arafah?",
+      tr: "Arafat'a hangi yoldan gidilir?",
+      fa: "کدام مسیر به عرفات می‌رود؟",
+      fr: "Quel chemin pour Arafat ?",
+      de: "Welcher Weg führt nach Arafat?",
+    },
+    {
+      en: "I need medical assistance",
+      ar: "أحتاج إلى مساعدة طبية",
+      ur: "مجھے طبی امداد چاہیے",
+      hi: "मुझे चिकित्सा सहायता चाहिए",
+      id: "Saya butuh bantuan medis",
+      ms: "Saya perlukan bantuan perubatan",
+      tr: "Tıbbi yardıma ihtiyacım var",
+      fa: "من به کمک پزشکی نیاز دارم",
+      fr: "J'ai besoin d'assistance médicale",
+      de: "Ich brauche medizinische Hilfe",
+    },
+    {
+      en: "Where is the nearest bathroom?",
+      ar: "أين أقرب دورة مياه؟",
+      ur: "قریب ترین باتھ روم کہاں ہے؟",
+      hi: "निकटतम शौचालय कहाँ है?",
+      id: "Di mana kamar mandi terdekat?",
+      ms: "Di manakah tandas yang terdekat?",
+      tr: "En yakın tuvalet nerede?",
+      fa: "نزدیک‌ترین دستشویی کجاست؟",
+      fr: "Où sont les toilettes les plus proches ?",
+      de: "Wo ist die nächste Toilette?",
+    },
+    {
+      en: "How much does this cost?",
+      ar: "كم تكلفة هذا؟",
+      ur: "اس کی قیمت کتنی ہے؟",
+      hi: "इसकी कीमत कितनी है?",
+      id: "Berapa harganya?",
+      ms: "Berapakah harganya?",
+      tr: "Bu ne kadar?",
+      fa: "قیمت این چقدر است؟",
+      fr: "Combien ça coûte ?",
+      de: "Wie viel kostet das?",
+    },
   ];
 
   // Available languages
@@ -186,13 +294,8 @@ const HajjUmrahTranslator = () => {
 
   // Function to handle common phrase selection
   const handlePhraseSelect = (phrase) => {
-    if (sourceLanguage === "ar") {
-      setInputText(phrase.ar);
-      setOutputText(phrase.en);
-    } else {
-      setInputText(phrase.en);
-      setOutputText(phrase.ar);
-    }
+    setInputText(phrase[sourceLanguage]);
+    setOutputText(phrase[targetLanguage]);
   };
 
   // Function to use text-to-speech
@@ -372,7 +475,24 @@ const HajjUmrahTranslator = () => {
 
       {activeTab === "phrases" && (
         <div className="phrases-container">
-          <h2>Common Hajj & Umrah Phrases</h2>
+          <div className="phrases-header">
+            <h2>Common Hajj & Umrah Phrases</h2>
+            <div className="phrase-language-selector">
+              <select
+                className="select"
+                value={selectedPhraseLanguage}
+                onChange={(e) => setSelectedPhraseLanguage(e.target.value)}
+              >
+                {languages
+                  .filter((lang) => lang.code !== "ar")
+                  .map((lang) => (
+                    <option key={`phrase-${lang.code}`} value={lang.code}>
+                      {lang.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </div>
           <div className="phrases-list">
             {commonPhrases.map((phrase, index) => (
               <div
@@ -380,16 +500,21 @@ const HajjUmrahTranslator = () => {
                 className="phrase-card"
                 onClick={() => handlePhraseSelect(phrase)}
               >
-                <div className="phrase-english">{phrase.en}</div>
+                <div className="phrase-text">
+                  {phrase[selectedPhraseLanguage]}
+                </div>
                 <div className="phrase-arabic">{phrase.ar}</div>
                 <div className="phrase-actions">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      speakText(phrase.en, "en");
+                      speakText(
+                        phrase[selectedPhraseLanguage],
+                        selectedPhraseLanguage
+                      );
                     }}
                   >
-                    🔊 EN
+                    🔊 {getLanguageName(selectedPhraseLanguage)}
                   </button>
                   <button
                     onClick={(e) => {
@@ -397,7 +522,7 @@ const HajjUmrahTranslator = () => {
                       speakText(phrase.ar, "ar");
                     }}
                   >
-                    🔊 AR
+                    🔊 Arabic
                   </button>
                 </div>
               </div>
