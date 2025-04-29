@@ -1,7 +1,7 @@
 // App.js
-import React from 'react';
-import HajjUmrahTranslator from './HajjUmrahTranslator';
-import './HajjUmrahTranslator.css';
+import React from "react";
+import HajjUmrahTranslator from "./HajjUmrahTranslator";
+import "./HajjUmrahTranslator.css";
 
 function App() {
   return (

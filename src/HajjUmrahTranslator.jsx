@@ -1,20 +1,21 @@
 // HajjUmrahTranslator.js
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const HajjUmrahTranslator = () => {
-  const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
-  const [sourceLanguage, setSourceLanguage] = useState('en');
-  const [targetLanguage, setTargetLanguage] = useState('ar');
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
+  const [sourceLanguage, setSourceLanguage] = useState("en");
+  const [targetLanguage, setTargetLanguage] = useState("ar");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [activeTab, setActiveTab] = useState('translate');
+  const [activeTab, setActiveTab] = useState("translate");
 
   // API key
-  const API_KEY = 'AIzaSyB0178Hza4hPsdUIka1b7qT5bXoHCYS_c4';
+  const API_URL = process.env.REACT_APP_API_URL;
+  const API_KEY = process.env.REACT_APP_API_KEY;
 
   // Common phrases for Hajj and Umrah
   const commonPhrases = [
@@ -22,36 +23,39 @@ const HajjUmrahTranslator = () => {
     { en: "How do I perform Tawaf?", ar: "كيف أؤدي الطواف؟" },
     { en: "Where is the nearest prayer area?", ar: "أين أقرب مكان للصلاة؟" },
     { en: "I need water", ar: "أحتاج إلى ماء" },
-    { en: "Where can I find Zamzam water?", ar: "أين يمكنني الحصول على ماء زمزم؟" },
+    {
+      en: "Where can I find Zamzam water?",
+      ar: "أين يمكنني الحصول على ماء زمزم؟",
+    },
     { en: "How do I get to Mina?", ar: "كيف أصل إلى منى؟" },
     { en: "Which way to Arafat?", ar: "أي طريق إلى عرفات؟" },
     { en: "I need medical assistance", ar: "أحتاج إلى مساعدة طبية" },
     { en: "Where is the nearest bathroom?", ar: "أين أقرب دورة مياه؟" },
-    { en: "How much does this cost?", ar: "كم تكلفة هذا؟" }
+    { en: "How much does this cost?", ar: "كم تكلفة هذا؟" },
   ];
 
   // Available languages
   const languages = [
-    { code: 'ar', name: 'Arabic' },
-    { code: 'en', name: 'English' },
-    { code: 'ur', name: 'Urdu' },
-    { code: 'hi', name: 'Hindi' },
-    { code: 'id', name: 'Indonesian' },
-    { code: 'ms', name: 'Malay' },
-    { code: 'tr', name: 'Turkish' },
-    { code: 'fa', name: 'Persian' },
-    { code: 'fr', name: 'French' },
-    { code: 'de', name: 'German' },
+    { code: "ar", name: "Arabic" },
+    { code: "en", name: "English" },
+    { code: "ur", name: "Urdu" },
+    { code: "hi", name: "Hindi" },
+    { code: "id", name: "Indonesian" },
+    { code: "ms", name: "Malay" },
+    { code: "tr", name: "Turkish" },
+    { code: "fa", name: "Persian" },
+    { code: "fr", name: "French" },
+    { code: "de", name: "German" },
   ];
 
   // Load translation history from localStorage
   useEffect(() => {
-    const storedHistory = localStorage.getItem('translationHistory');
+    const storedHistory = localStorage.getItem("translationHistory");
     if (storedHistory) {
       setHistory(JSON.parse(storedHistory));
     }
 
-    const storedFavorites = localStorage.getItem('translationFavorites');
+    const storedFavorites = localStorage.getItem("translationFavorites");
     if (storedFavorites) {
       setFavorites(JSON.parse(storedFavorites));
     }
@@ -59,51 +63,48 @@ const HajjUmrahTranslator = () => {
 
   // Save translation history to localStorage
   useEffect(() => {
-    localStorage.setItem('translationHistory', JSON.stringify(history));
+    localStorage.setItem("translationHistory", JSON.stringify(history));
   }, [history]);
 
   // Save favorites to localStorage
   useEffect(() => {
-    localStorage.setItem('translationFavorites', JSON.stringify(favorites));
+    localStorage.setItem("translationFavorites", JSON.stringify(favorites));
   }, [favorites]);
 
   // Function to handle translation
   const translateText = async () => {
     if (!inputText.trim()) {
-      setError('Please enter text to translate');
+      setError("Please enter text to translate");
       return;
     }
-  
+
     setIsLoading(true);
-    setError('');
-  
+    setError("");
+
     try {
-      const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
-        {
-          contents: [
-            {
-              parts: [
-                {
-                  text: `Translate the following text from ${sourceLanguage} to ${targetLanguage}. Provide ONLY the direct translation without any explanations, examples, or additional context. Do not include any markdown formatting, bullet points, or explanatory text:\n${inputText}`
-                }
-              ]
-            }
-          ]
-        }
-      );
-  
+      const response = await axios.post(`${API_URL}?key=${API_KEY}`, {
+        contents: [
+          {
+            parts: [
+              {
+                text: `Translate the following text from ${sourceLanguage} to ${targetLanguage}. Provide ONLY the direct translation without any explanations, examples, or additional context. Do not include any markdown formatting, bullet points, or explanatory text:\n${inputText}`,
+              },
+            ],
+          },
+        ],
+      });
+
       // استخراج الترجمة
       const translation = response.data.candidates[0].content.parts[0].text;
       // تنظيف النص من أي علامات markdown أو نصوص إضافية
       const cleanTranslation = translation
-        .replace(/[\*\#\-\_\`]/g, '') // إزالة علامات markdown
-        .replace(/^\s*[\n\r]+/g, '') // إزالة الأسطر الفارغة في البداية
-        .replace(/[\n\r]+\s*$/g, '') // إزالة الأسطر الفارغة في النهاية
+        .replace(/[\*\#\-\_\`]/g, "") // إزالة علامات markdown
+        .replace(/^\s*[\n\r]+/g, "") // إزالة الأسطر الفارغة في البداية
+        .replace(/[\n\r]+\s*$/g, "") // إزالة الأسطر الفارغة في النهاية
         .trim(); // إزالة المسافات الزائدة
 
       setOutputText(cleanTranslation);
-  
+
       // إضافة للـ History
       const newTranslation = {
         id: Date.now(),
@@ -111,30 +112,33 @@ const HajjUmrahTranslator = () => {
         translatedText: cleanTranslation,
         sourceLanguage,
         targetLanguage,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-  
-      setHistory(prevHistory => [newTranslation, ...prevHistory.slice(0, 19)]);
+
+      setHistory((prevHistory) => [
+        newTranslation,
+        ...prevHistory.slice(0, 19),
+      ]);
     } catch (err) {
-      console.error('Translation error:', err);
-      setError('Failed to translate. Please check your API key and try again.');
+      console.error("Translation error:", err);
+      setError("Failed to translate. Please check your API key and try again.");
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   // Helper function to get language name from code
   const getLanguageName = (code) => {
-    const language = languages.find(lang => lang.code === code);
+    const language = languages.find((lang) => lang.code === code);
     return language ? language.name : code;
   };
 
   // Function to add/remove favorites
   const toggleFavorite = (translation) => {
-    const isFavorite = favorites.some(fav => fav.id === translation.id);
-    
+    const isFavorite = favorites.some((fav) => fav.id === translation.id);
+
     if (isFavorite) {
-      setFavorites(favorites.filter(fav => fav.id !== translation.id));
+      setFavorites(favorites.filter((fav) => fav.id !== translation.id));
     } else {
       setFavorites([...favorites, translation]);
     }
@@ -148,7 +152,7 @@ const HajjUmrahTranslator = () => {
 
   // Function to handle common phrase selection
   const handlePhraseSelect = (phrase) => {
-    if (sourceLanguage === 'ar') {
+    if (sourceLanguage === "ar") {
       setInputText(phrase.ar);
       setOutputText(phrase.en);
     } else {
@@ -172,97 +176,97 @@ const HajjUmrahTranslator = () => {
   // Function to clear history
   const clearHistory = () => {
     setHistory([]);
-    localStorage.removeItem('translationHistory');
+    localStorage.removeItem("translationHistory");
   };
 
   // Add CSS styles at the top of the component
   const styles = {
     translatorContainer: {
-      padding: '20px',
-      maxWidth: '1200px',
-      margin: '0 auto',
+      padding: "20px",
+      maxWidth: "1200px",
+      margin: "0 auto",
     },
     languageSelectors: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '15px',
-      marginBottom: '20px',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "15px",
+      marginBottom: "20px",
     },
     select: {
-      padding: '10px 15px',
-      borderRadius: '8px',
-      border: '1px solid #ddd',
-      fontSize: '16px',
-      width: '200px',
-      backgroundColor: '#fff',
+      padding: "10px 15px",
+      borderRadius: "8px",
+      border: "1px solid #ddd",
+      fontSize: "16px",
+      width: "200px",
+      backgroundColor: "#fff",
     },
     swapBtn: {
-      padding: '8px 12px',
-      borderRadius: '50%',
-      border: '1px solid #ddd',
-      backgroundColor: '#fff',
-      cursor: 'pointer',
-      fontSize: '20px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      transition: 'all 0.3s ease',
+      padding: "8px 12px",
+      borderRadius: "50%",
+      border: "1px solid #ddd",
+      backgroundColor: "#fff",
+      cursor: "pointer",
+      fontSize: "20px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "all 0.3s ease",
     },
     translationBoxes: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '40px',
-      marginBottom: '20px',
-      padding: '20px',
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: "40px",
+      marginBottom: "20px",
+      padding: "20px",
     },
     textBox: {
-      width: '100%',
-      height: '200px',
-      padding: '15px',
-      borderRadius: '8px',
-      border: '2px solid #ddd',
-      fontSize: '16px',
-      resize: 'none',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-      outline: 'none',
-      transition: 'border-color 0.3s ease',
-      backgroundColor: '#fafafa',
-      lineHeight: '1.5',
-      overflowY: 'auto',
-      margin: '10px 0',
+      width: "100%",
+      height: "200px",
+      padding: "15px",
+      borderRadius: "8px",
+      border: "2px solid #ddd",
+      fontSize: "16px",
+      resize: "none",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+      outline: "none",
+      transition: "border-color 0.3s ease",
+      backgroundColor: "#fafafa",
+      lineHeight: "1.5",
+      overflowY: "auto",
+      margin: "10px 0",
     },
     textActions: {
-      display: 'flex',
-      gap: '10px',
-      marginTop: '10px',
+      display: "flex",
+      gap: "10px",
+      marginTop: "10px",
     },
     actionButton: {
-      padding: '8px 15px',
-      borderRadius: '6px',
-      border: 'none',
-      backgroundColor: '#f0f0f0',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '5px',
-      transition: 'all 0.3s ease',
+      padding: "8px 15px",
+      borderRadius: "6px",
+      border: "none",
+      backgroundColor: "#f0f0f0",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: "5px",
+      transition: "all 0.3s ease",
     },
     translateBtn: {
-      width: '100%',
-      padding: '15px',
-      borderRadius: '8px',
-      border: 'none',
-      backgroundColor: '#4CAF50',
-      color: 'white',
-      fontSize: '18px',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
+      width: "100%",
+      padding: "15px",
+      borderRadius: "8px",
+      border: "none",
+      backgroundColor: "#4CAF50",
+      color: "white",
+      fontSize: "18px",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
     },
     errorMessage: {
-      color: '#ff0000',
-      textAlign: 'center',
-      marginTop: '10px',
+      color: "#ff0000",
+      textAlign: "center",
+      marginTop: "10px",
     },
   };
 
@@ -274,66 +278,63 @@ const HajjUmrahTranslator = () => {
       </div>
 
       <div className="tabs">
-        <button 
-          className={`tab ${activeTab === 'translate' ? 'active' : ''}`}
-          onClick={() => setActiveTab('translate')}
+        <button
+          className={`tab ${activeTab === "translate" ? "active" : ""}`}
+          onClick={() => setActiveTab("translate")}
         >
           Translate
         </button>
-        <button 
-          className={`tab ${activeTab === 'phrases' ? 'active' : ''}`}
-          onClick={() => setActiveTab('phrases')}
+        <button
+          className={`tab ${activeTab === "phrases" ? "active" : ""}`}
+          onClick={() => setActiveTab("phrases")}
         >
           Common Phrases
         </button>
-        <button 
-          className={`tab ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
+        <button
+          className={`tab ${activeTab === "history" ? "active" : ""}`}
+          onClick={() => setActiveTab("history")}
         >
           History
         </button>
-        <button 
-          className={`tab ${activeTab === 'favorites' ? 'active' : ''}`}
-          onClick={() => setActiveTab('favorites')}
+        <button
+          className={`tab ${activeTab === "favorites" ? "active" : ""}`}
+          onClick={() => setActiveTab("favorites")}
         >
           Favorites
         </button>
-        <button 
-          className={`tab ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
+        <button
+          className={`tab ${activeTab === "settings" ? "active" : ""}`}
+          onClick={() => setActiveTab("settings")}
         >
           Settings
         </button>
       </div>
 
-      {activeTab === 'translate' && (
+      {activeTab === "translate" && (
         <div style={styles.translatorContainer}>
           <div style={styles.languageSelectors}>
-            <select 
+            <select
               style={styles.select}
-              value={sourceLanguage} 
+              value={sourceLanguage}
               onChange={(e) => setSourceLanguage(e.target.value)}
             >
-              {languages.map(lang => (
+              {languages.map((lang) => (
                 <option key={`source-${lang.code}`} value={lang.code}>
                   {lang.name}
                 </option>
               ))}
             </select>
-            
-            <button 
-              onClick={swapLanguages} 
-              style={styles.swapBtn}
-            >
+
+            <button onClick={swapLanguages} style={styles.swapBtn}>
               ⇄
             </button>
-            
-            <select 
+
+            <select
               style={styles.select}
-              value={targetLanguage} 
+              value={targetLanguage}
               onChange={(e) => setTargetLanguage(e.target.value)}
             >
-              {languages.map(lang => (
+              {languages.map((lang) => (
                 <option key={`target-${lang.code}`} value={lang.code}>
                   {lang.name}
                 </option>
@@ -346,23 +347,23 @@ const HajjUmrahTranslator = () => {
               <textarea
                 style={{
                   ...styles.textBox,
-                  backgroundColor: '#ffffff',
+                  backgroundColor: "#ffffff",
                 }}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={`Enter text in ${getLanguageName(sourceLanguage)}`}
-                dir={sourceLanguage === 'ar' ? 'rtl' : 'ltr'}
+                dir={sourceLanguage === "ar" ? "rtl" : "ltr"}
               />
               <div style={styles.textActions}>
-                <button 
+                <button
                   style={styles.actionButton}
                   onClick={() => speakText(inputText, sourceLanguage)}
                 >
                   🔊 Listen
                 </button>
-                <button 
+                <button
                   style={styles.actionButton}
-                  onClick={() => setInputText('')}
+                  onClick={() => setInputText("")}
                 >
                   ✕ Clear
                 </button>
@@ -373,38 +374,42 @@ const HajjUmrahTranslator = () => {
               <textarea
                 style={{
                   ...styles.textBox,
-                  backgroundColor: '#ffffff',
-                  cursor: 'default',
+                  backgroundColor: "#ffffff",
+                  cursor: "default",
                 }}
                 value={outputText}
                 readOnly
-                placeholder={`Translation in ${getLanguageName(targetLanguage)}`}
-                dir={targetLanguage === 'ar' ? 'rtl' : 'ltr'}
+                placeholder={`Translation in ${getLanguageName(
+                  targetLanguage
+                )}`}
+                dir={targetLanguage === "ar" ? "rtl" : "ltr"}
               />
               <div style={styles.textActions}>
-                <button 
+                <button
                   style={styles.actionButton}
                   onClick={() => speakText(outputText, targetLanguage)}
                 >
                   🔊 Listen
                 </button>
-                <button 
+                <button
                   style={styles.actionButton}
                   onClick={() => copyToClipboard(outputText)}
                 >
                   📋 Copy
                 </button>
                 {outputText && (
-                  <button 
+                  <button
                     style={styles.actionButton}
-                    onClick={() => toggleFavorite({
-                      id: Date.now(),
-                      sourceText: inputText,
-                      translatedText: outputText,
-                      sourceLanguage,
-                      targetLanguage,
-                      timestamp: new Date().toISOString()
-                    })}
+                    onClick={() =>
+                      toggleFavorite({
+                        id: Date.now(),
+                        sourceText: inputText,
+                        translatedText: outputText,
+                        sourceLanguage,
+                        targetLanguage,
+                        timestamp: new Date().toISOString(),
+                      })
+                    }
                   >
                     ⭐ Favorite
                   </button>
@@ -413,41 +418,49 @@ const HajjUmrahTranslator = () => {
             </div>
           </div>
 
-          <button 
+          <button
             style={{
               ...styles.translateBtn,
               opacity: isLoading ? 0.7 : 1,
-              cursor: isLoading ? 'not-allowed' : 'pointer',
+              cursor: isLoading ? "not-allowed" : "pointer",
             }}
-            onClick={translateText} 
+            onClick={translateText}
             disabled={isLoading || !inputText.trim()}
           >
-            {isLoading ? 'Translating...' : 'Translate'}
+            {isLoading ? "Translating..." : "Translate"}
           </button>
 
           {error && <div style={styles.errorMessage}>{error}</div>}
         </div>
       )}
 
-      {activeTab === 'phrases' && (
+      {activeTab === "phrases" && (
         <div className="phrases-container">
           <h2>Common Hajj & Umrah Phrases</h2>
           <div className="phrases-list">
             {commonPhrases.map((phrase, index) => (
-              <div key={index} className="phrase-card" onClick={() => handlePhraseSelect(phrase)}>
+              <div
+                key={index}
+                className="phrase-card"
+                onClick={() => handlePhraseSelect(phrase)}
+              >
                 <div className="phrase-english">{phrase.en}</div>
                 <div className="phrase-arabic">{phrase.ar}</div>
                 <div className="phrase-actions">
-                  <button onClick={(e) => {
-                    e.stopPropagation();
-                    speakText(phrase.en, 'en');
-                  }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      speakText(phrase.en, "en");
+                    }}
+                  >
                     🔊 EN
                   </button>
-                  <button onClick={(e) => {
-                    e.stopPropagation();
-                    speakText(phrase.ar, 'ar');
-                  }}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      speakText(phrase.ar, "ar");
+                    }}
+                  >
                     🔊 AR
                   </button>
                 </div>
@@ -457,7 +470,7 @@ const HajjUmrahTranslator = () => {
         </div>
       )}
 
-      {activeTab === 'history' && (
+      {activeTab === "history" && (
         <div className="history-container">
           <div className="history-header">
             <h2>Translation History</h2>
@@ -467,36 +480,50 @@ const HajjUmrahTranslator = () => {
               </button>
             )}
           </div>
-          
+
           {history.length === 0 ? (
             <p>No translation history yet.</p>
           ) : (
             <div className="history-list">
-              {history.map(item => (
+              {history.map((item) => (
                 <div key={item.id} className="history-item">
                   <div className="history-original">
-                    <strong>{getLanguageName(item.sourceLanguage)}:</strong> {item.sourceText}
-                    <button onClick={() => speakText(item.sourceText, item.sourceLanguage)}>
+                    <strong>{getLanguageName(item.sourceLanguage)}:</strong>{" "}
+                    {item.sourceText}
+                    <button
+                      onClick={() =>
+                        speakText(item.sourceText, item.sourceLanguage)
+                      }
+                    >
                       🔊
                     </button>
                   </div>
                   <div className="history-translation">
-                    <strong>{getLanguageName(item.targetLanguage)}:</strong> {item.translatedText}
-                    <button onClick={() => speakText(item.translatedText, item.targetLanguage)}>
+                    <strong>{getLanguageName(item.targetLanguage)}:</strong>{" "}
+                    {item.translatedText}
+                    <button
+                      onClick={() =>
+                        speakText(item.translatedText, item.targetLanguage)
+                      }
+                    >
                       🔊
                     </button>
                   </div>
                   <div className="history-actions">
-                    <button onClick={() => {
-                      setInputText(item.sourceText);
-                      setSourceLanguage(item.sourceLanguage);
-                      setTargetLanguage(item.targetLanguage);
-                      setActiveTab('translate');
-                    }}>
+                    <button
+                      onClick={() => {
+                        setInputText(item.sourceText);
+                        setSourceLanguage(item.sourceLanguage);
+                        setTargetLanguage(item.targetLanguage);
+                        setActiveTab("translate");
+                      }}
+                    >
                       Use Again
                     </button>
                     <button onClick={() => toggleFavorite(item)}>
-                      {favorites.some(fav => fav.id === item.id) ? '★ Favorited' : '☆ Add to Favorites'}
+                      {favorites.some((fav) => fav.id === item.id)
+                        ? "★ Favorited"
+                        : "☆ Add to Favorites"}
                     </button>
                   </div>
                   <div className="history-time">
@@ -509,35 +536,50 @@ const HajjUmrahTranslator = () => {
         </div>
       )}
 
-      {activeTab === 'favorites' && (
+      {activeTab === "favorites" && (
         <div className="favorites-container">
           <h2>Favorite Translations</h2>
-          
+
           {favorites.length === 0 ? (
-            <p>No favorites yet. Add translations to your favorites for quick access.</p>
+            <p>
+              No favorites yet. Add translations to your favorites for quick
+              access.
+            </p>
           ) : (
             <div className="favorites-list">
-              {favorites.map(item => (
+              {favorites.map((item) => (
                 <div key={item.id} className="favorite-item">
                   <div className="favorite-original">
-                    <strong>{getLanguageName(item.sourceLanguage)}:</strong> {item.sourceText}
-                    <button onClick={() => speakText(item.sourceText, item.sourceLanguage)}>
+                    <strong>{getLanguageName(item.sourceLanguage)}:</strong>{" "}
+                    {item.sourceText}
+                    <button
+                      onClick={() =>
+                        speakText(item.sourceText, item.sourceLanguage)
+                      }
+                    >
                       🔊
                     </button>
                   </div>
                   <div className="favorite-translation">
-                    <strong>{getLanguageName(item.targetLanguage)}:</strong> {item.translatedText}
-                    <button onClick={() => speakText(item.translatedText, item.targetLanguage)}>
+                    <strong>{getLanguageName(item.targetLanguage)}:</strong>{" "}
+                    {item.translatedText}
+                    <button
+                      onClick={() =>
+                        speakText(item.translatedText, item.targetLanguage)
+                      }
+                    >
                       🔊
                     </button>
                   </div>
                   <div className="favorite-actions">
-                    <button onClick={() => {
-                      setInputText(item.sourceText);
-                      setSourceLanguage(item.sourceLanguage);
-                      setTargetLanguage(item.targetLanguage);
-                      setActiveTab('translate');
-                    }}>
+                    <button
+                      onClick={() => {
+                        setInputText(item.sourceText);
+                        setSourceLanguage(item.sourceLanguage);
+                        setTargetLanguage(item.targetLanguage);
+                        setActiveTab("translate");
+                      }}
+                    >
                       Use Again
                     </button>
                     <button onClick={() => toggleFavorite(item)}>
@@ -551,15 +593,20 @@ const HajjUmrahTranslator = () => {
         </div>
       )}
 
-      {activeTab === 'settings' && (
+      {activeTab === "settings" && (
         <div className="settings-container">
           <h2>Settings</h2>
           <div className="settings-info">
             <h3>About Hajj & Umrah Translator</h3>
-            <p>This application is specifically designed to help pilgrims communicate effectively during Hajj and Umrah.</p>
+            <p>
+              This application is specifically designed to help pilgrims
+              communicate effectively during Hajj and Umrah.
+            </p>
             <p>Features:</p>
             <ul>
-              <li>Translate between 10 languages commonly spoken by pilgrims</li>
+              <li>
+                Translate between 10 languages commonly spoken by pilgrims
+              </li>
               <li>Save favorite translations for quick access</li>
               <li>Common religious phrases related to Hajj and Umrah</li>
               <li>Text-to-speech capability for better communication</li>
@@ -571,7 +618,10 @@ const HajjUmrahTranslator = () => {
 
       <div className="offline-note">
         <h3>Offline Mode Features</h3>
-        <p>Common phrases, favorites, and history are available offline. Translation requires internet connection.</p>
+        <p>
+          Common phrases, favorites, and history are available offline.
+          Translation requires internet connection.
+        </p>
       </div>
     </div>
   );
