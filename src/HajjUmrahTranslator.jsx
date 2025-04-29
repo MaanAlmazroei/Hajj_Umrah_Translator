@@ -213,97 +213,6 @@ const HajjUmrahTranslator = () => {
     Cookies.remove("translationHistory");
   };
 
-  // Add CSS styles at the top of the component
-  const styles = {
-    translatorContainer: {
-      padding: "20px",
-      maxWidth: "1200px",
-      margin: "0 auto",
-    },
-    languageSelectors: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "15px",
-      marginBottom: "20px",
-    },
-    select: {
-      padding: "10px 15px",
-      borderRadius: "8px",
-      border: "1px solid #ddd",
-      fontSize: "16px",
-      width: "200px",
-      backgroundColor: "#fff",
-    },
-    swapBtn: {
-      padding: "8px 12px",
-      borderRadius: "50%",
-      border: "1px solid #ddd",
-      backgroundColor: "#fff",
-      cursor: "pointer",
-      fontSize: "20px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      transition: "all 0.3s ease",
-    },
-    translationBoxes: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "40px",
-      marginBottom: "20px",
-      padding: "20px",
-    },
-    textBox: {
-      width: "100%",
-      height: "200px",
-      padding: "15px",
-      borderRadius: "8px",
-      border: "2px solid #ddd",
-      fontSize: "16px",
-      resize: "none",
-      boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-      outline: "none",
-      transition: "border-color 0.3s ease",
-      backgroundColor: "#fafafa",
-      lineHeight: "1.5",
-      overflowY: "auto",
-      margin: "10px 0",
-    },
-    textActions: {
-      display: "flex",
-      gap: "10px",
-      marginTop: "10px",
-    },
-    actionButton: {
-      padding: "8px 15px",
-      borderRadius: "6px",
-      border: "none",
-      backgroundColor: "#f0f0f0",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      gap: "5px",
-      transition: "all 0.3s ease",
-    },
-    translateBtn: {
-      width: "100%",
-      padding: "15px",
-      borderRadius: "8px",
-      border: "none",
-      backgroundColor: "#4CAF50",
-      color: "white",
-      fontSize: "18px",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-    },
-    errorMessage: {
-      color: "#ff0000",
-      textAlign: "center",
-      marginTop: "10px",
-    },
-  };
-
   return (
     <div className="hajj-umrah-translator">
       <div className="app-header">
@@ -345,10 +254,10 @@ const HajjUmrahTranslator = () => {
       </div>
 
       {activeTab === "translate" && (
-        <div style={styles.translatorContainer}>
-          <div style={styles.languageSelectors}>
+        <div className="translatorContainer">
+          <div className="languageSelectors">
             <select
-              style={styles.select}
+              className="select"
               value={sourceLanguage}
               onChange={(e) => setSourceLanguage(e.target.value)}
             >
@@ -359,12 +268,12 @@ const HajjUmrahTranslator = () => {
               ))}
             </select>
 
-            <button onClick={swapLanguages} style={styles.swapBtn}>
+            <button onClick={swapLanguages} className="swapBtn">
               ⇄
             </button>
 
             <select
-              style={styles.select}
+              className="select"
               value={targetLanguage}
               onChange={(e) => setTargetLanguage(e.target.value)}
             >
@@ -376,27 +285,24 @@ const HajjUmrahTranslator = () => {
             </select>
           </div>
 
-          <div style={styles.translationBoxes}>
+          <div className="translationBoxes">
             <div>
               <textarea
-                style={{
-                  ...styles.textBox,
-                  backgroundColor: "#ffffff",
-                }}
+                className="textBox"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={`Enter text in ${getLanguageName(sourceLanguage)}`}
                 dir={sourceLanguage === "ar" ? "rtl" : "ltr"}
               />
-              <div style={styles.textActions}>
+              <div className="textActions">
                 <button
-                  style={styles.actionButton}
+                  className="actionButton"
                   onClick={() => speakText(inputText, sourceLanguage)}
                 >
                   🔊 Listen
                 </button>
                 <button
-                  style={styles.actionButton}
+                  className="actionButton"
                   onClick={() => setInputText("")}
                 >
                   ✕ Clear
@@ -406,11 +312,7 @@ const HajjUmrahTranslator = () => {
 
             <div>
               <textarea
-                style={{
-                  ...styles.textBox,
-                  backgroundColor: "#ffffff",
-                  cursor: "default",
-                }}
+                className="textBox"
                 value={outputText}
                 readOnly
                 placeholder={`Translation in ${getLanguageName(
@@ -418,22 +320,22 @@ const HajjUmrahTranslator = () => {
                 )}`}
                 dir={targetLanguage === "ar" ? "rtl" : "ltr"}
               />
-              <div style={styles.textActions}>
+              <div className="textActions">
                 <button
-                  style={styles.actionButton}
+                  className="actionButton"
                   onClick={() => speakText(outputText, targetLanguage)}
                 >
                   🔊 Listen
                 </button>
                 <button
-                  style={styles.actionButton}
+                  className="actionButton"
                   onClick={() => copyToClipboard(outputText)}
                 >
                   📋 Copy
                 </button>
                 {outputText && (
                   <button
-                    style={styles.actionButton}
+                    className="actionButton"
                     onClick={() =>
                       toggleFavorite({
                         id: Date.now(),
@@ -453,8 +355,8 @@ const HajjUmrahTranslator = () => {
           </div>
 
           <button
+            className="translateBtn"
             style={{
-              ...styles.translateBtn,
               opacity: isLoading ? 0.7 : 1,
               cursor: isLoading ? "not-allowed" : "pointer",
             }}
@@ -464,7 +366,7 @@ const HajjUmrahTranslator = () => {
             {isLoading ? "Translating..." : "Translate"}
           </button>
 
-          {error && <div style={styles.errorMessage}>{error}</div>}
+          {error && <div className="errorMessage">{error}</div>}
         </div>
       )}
 

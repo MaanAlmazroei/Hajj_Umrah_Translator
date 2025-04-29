@@ -31,7 +31,6 @@
   display: flex;
   margin-bottom: 20px;
   border-bottom: 1px solid #ddd;
-  overflow-x: auto;
 }
 
 .tab {
@@ -110,6 +109,103 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+.translatorContainer {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.languageSelectors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.select {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  width: 200px;
+  background-color: #fff;
+}
+
+.swapBtn {
+  padding: 8px 12px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.translationBoxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.textBox {
+  width: 100%;
+  height: 200px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  font-size: 16px;
+  resize: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  outline: none;
+  transition: border-color 0.3s ease;
+  background-color: white;
+  line-height: 1.5;
+  overflow-y: auto;
+  margin: 10px 0;
+}
+
+.textActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.actionButton {
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.translateBtn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.errorMessage {
+  color: #ff0000;
+  text-align: center;
+  margin-top: 10px;
 }
 
 @media (min-width: 768px) {
