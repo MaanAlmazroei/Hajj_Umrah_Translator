@@ -246,8 +246,8 @@ const HajjUmrahTranslator = () => {
           Favorites
         </button>
         <button
-          className={`tab ${activeTab === "settings" ? "active" : ""}`}
-          onClick={() => setActiveTab("settings")}
+          className={`tab ${activeTab === "about" ? "active" : ""}`}
+          onClick={() => setActiveTab("about")}
         >
           About
         </button>
@@ -529,10 +529,10 @@ const HajjUmrahTranslator = () => {
         </div>
       )}
 
-      {activeTab === "settings" && (
-        <div className="settings-container">
+      {activeTab === "about" && (
+        <div className="about-container">
           <h2>About</h2>
-          <div className="settings-info">
+          <div className="about-info">
             <h3>About Hajj & Umrah Translator</h3>
             <p>
               This application is specifically designed to help pilgrims

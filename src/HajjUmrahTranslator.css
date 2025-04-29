@@ -67,7 +67,7 @@
 .phrases-container,
 .history-container,
 .favorites-container,
-.settings-container {
+.about-container {
   background: #fff;
   border-radius: 10px;
   padding: 20px;
@@ -393,7 +393,7 @@ textarea {
   background-color: #fffbf0;
 }
 
-/* Settings Tab */
+/* About Tab */
 .api-key-section {
   margin-bottom: 30px;
   padding: 20px;
@@ -426,20 +426,20 @@ textarea {
   font-weight: bold;
 }
 
-.settings-info {
+.about-info {
   margin-top: 20px;
 }
 
-.settings-info h3 {
+.about-info h3 {
   color: #333;
   margin-bottom: 15px;
 }
 
-.settings-info ul {
+.about-info ul {
   padding-left: 20px;
 }
 
-.settings-info li {
+.about-info li {
   margin-bottom: 8px;
 }
 
