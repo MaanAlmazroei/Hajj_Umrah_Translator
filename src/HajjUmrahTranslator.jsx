@@ -213,7 +213,7 @@ const HajjUmrahTranslator = () => {
     }
 
     // Input length validation
-    const MAX_INPUT_LENGTH = 500;
+    const MAX_INPUT_LENGTH = 100;
     if (inputText.length > MAX_INPUT_LENGTH) {
       setError(
         `Input too long. Maximum allowed is ${MAX_INPUT_LENGTH} characters.`
@@ -225,6 +225,73 @@ const HajjUmrahTranslator = () => {
     setError("");
 
     try {
+      // First try Gemini API
+      try {
+        const geminiResponse = await axios.post(
+          process.env.REACT_APP_GEMINI_API_URL +
+            "?key=" +
+            process.env.REACT_APP_GEMINI_API_KEY,
+          {
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `Act as an expert Islamic translator for Hajj/Umrah. Translate this text from ${sourceLanguage} to ${targetLanguage} with:
+
+1. **Terminology Rules**:
+- Preserve in original Arabic:
+  * Quranic verses/hadith
+  * Duas (e.g. "Labbayk Allahumma Labbayk")
+  * Ritual names (Tawaf, Sa'i, Wuquf)
+  * Holy sites (Mina, Arafat, Jamarat)
+- Translate other text naturally
+
+2. **Format Requirements**:
+- Only output the translation
+- No explanations or notes
+- No bullet points or formatting
+- Keep Arabic script for Islamic terms
+
+3. **Special Cases**:
+- Times: Use prayer times ("after Dhuhr")
+- Directions: Use pilgrim terms ("near Maqam Ibrahim")
+- Standardize spellings ("Makkah" not "Mecca")
+
+4. **For not recognized words**:
+-You must stick to one way of saying incorrect word
+
+Text to translate: "${inputText}"`,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (
+          geminiResponse.data &&
+          geminiResponse.data.candidates &&
+          geminiResponse.data.candidates[0]
+        ) {
+          const translation =
+            geminiResponse.data.candidates[0].content.parts[0].text;
+          setOutputText(translation);
+          addToHistory(inputText, translation);
+          return;
+        }
+      } catch (geminiError) {
+        console.log(
+          "Gemini API failed, falling back to offline translation: " +
+            geminiError
+        );
+      }
+
+      // Fallback to LibreTranslate
       const requestData = {
         q: inputText,
         source: sourceLanguage,
@@ -232,47 +299,42 @@ const HajjUmrahTranslator = () => {
       };
 
       const response = await axios.post(LIBRETRANSLATE_API_URL, requestData);
-
       const translation = response.data.translatedText;
       setOutputText(translation);
-
-      // Check if this exact translation already exists in history
-      const isDuplicate = history.some(
-        (item) =>
-          item.sourceText === inputText &&
-          item.translatedText === translation &&
-          item.sourceLanguage === sourceLanguage &&
-          item.targetLanguage === targetLanguage
-      );
-
-      // Only add to history if it's not a duplicate
-      if (!isDuplicate) {
-        const newTranslation = {
-          id: Date.now(),
-          sourceText: inputText,
-          translatedText: translation,
-          sourceLanguage,
-          targetLanguage,
-          timestamp: new Date().toISOString(),
-        };
-
-        setHistory((prevHistory) => [
-          newTranslation,
-          ...prevHistory.slice(0, 19),
-        ]);
-      }
+      addToHistory(inputText, translation);
     } catch (err) {
-      console.error("Translation error:", err);
-
-      if (err.message.includes("Network Error")) {
-        setError(
-          "Cannot connect to local LibreTranslate server. Please ensure it's running."
-        );
-      } else {
-        setError("Something went wrong. Please try again later.");
-      }
+      console.log("Translation error:", err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Helper function to add translations to history
+  const addToHistory = (sourceText, translatedText) => {
+    // Check if this exact translation already exists in history
+    const isDuplicate = history.some(
+      (item) =>
+        item.sourceText === sourceText &&
+        item.translatedText === translatedText &&
+        item.sourceLanguage === sourceLanguage &&
+        item.targetLanguage === targetLanguage
+    );
+
+    // Only add to history if it's not a duplicate
+    if (!isDuplicate) {
+      const newTranslation = {
+        id: Date.now(),
+        sourceText,
+        translatedText,
+        sourceLanguage,
+        targetLanguage,
+        timestamp: new Date().toISOString(),
+      };
+
+      setHistory((prevHistory) => [
+        newTranslation,
+        ...prevHistory.slice(0, 19),
+      ]);
     }
   };
 
@@ -336,17 +398,15 @@ const HajjUmrahTranslator = () => {
   return (
     <div className="hajj-umrah-translator">
       <div className="app-header">
-        <h1>Hajj & Umrah Translator</h1>
-        <p>Communicate effectively during your pilgrimage</p>
+        <h1>
+          <span className="typewriter">Hajj & Umrah Translator</span>
+        </h1>
+        <p className="subtitle">
+          Communicate effectively during your pilgrimage
+        </p>
       </div>
 
       <div className="tabs">
-        <button
-          className={`tab ${activeTab === "translate" ? "active" : ""}`}
-          onClick={() => setActiveTab("translate")}
-        >
-          Translate
-        </button>
         <button
           className={`tab ${activeTab === "phrases" ? "active" : ""}`}
           onClick={() => setActiveTab("phrases")}
@@ -354,10 +414,10 @@ const HajjUmrahTranslator = () => {
           Common Phrases
         </button>
         <button
-          className={`tab ${activeTab === "history" ? "active" : ""}`}
-          onClick={() => setActiveTab("history")}
+          className={`tab ${activeTab === "translate" ? "active" : ""}`}
+          onClick={() => setActiveTab("translate")}
         >
-          History
+          Translate
         </button>
         <button
           className={`tab ${activeTab === "favorites" ? "active" : ""}`}
@@ -366,10 +426,10 @@ const HajjUmrahTranslator = () => {
           Favorites
         </button>
         <button
-          className={`tab ${activeTab === "about" ? "active" : ""}`}
-          onClick={() => setActiveTab("about")}
+          className={`tab ${activeTab === "history" ? "active" : ""}`}
+          onClick={() => setActiveTab("history")}
         >
-          About
+          History
         </button>
       </div>
 
@@ -474,6 +534,8 @@ const HajjUmrahTranslator = () => {
             </div>
           </div>
 
+          {error && <div className="errorMessage">{error}</div>}
+
           <button
             className="translateBtn"
             style={{
@@ -485,8 +547,6 @@ const HajjUmrahTranslator = () => {
           >
             {isLoading ? "Translating..." : "Translate"}
           </button>
-
-          {error && <div className="errorMessage">{error}</div>}
         </div>
       )}
 
@@ -567,8 +627,9 @@ const HajjUmrahTranslator = () => {
                 <div key={item.id} className="history-item">
                   <div className="history-original">
                     <strong>{getLanguageName(item.sourceLanguage)}:</strong>{" "}
-                    {item.sourceText}
+                    {item.sourceText}{" "}
                     <button
+                      className="actionButton"
                       onClick={() =>
                         speakText(item.sourceText, item.sourceLanguage)
                       }
@@ -578,8 +639,9 @@ const HajjUmrahTranslator = () => {
                   </div>
                   <div className="history-translation">
                     <strong>{getLanguageName(item.targetLanguage)}:</strong>{" "}
-                    {item.translatedText}
+                    {item.translatedText}{" "}
                     <button
+                      className="actionButton"
                       onClick={() =>
                         speakText(item.translatedText, item.targetLanguage)
                       }
@@ -589,6 +651,7 @@ const HajjUmrahTranslator = () => {
                   </div>
                   <div className="history-actions">
                     <button
+                      className="actionButton"
                       onClick={() => {
                         setInputText(item.sourceText);
                         setSourceLanguage(item.sourceLanguage);
@@ -598,7 +661,10 @@ const HajjUmrahTranslator = () => {
                     >
                       Use Again
                     </button>
-                    <button onClick={() => toggleFavorite(item)}>
+                    <button
+                      className="actionButton"
+                      onClick={() => toggleFavorite(item)}
+                    >
                       {favorites.some((fav) => fav.id === item.id)
                         ? "★ Favorited"
                         : "☆ Add to Favorites"}
@@ -629,8 +695,9 @@ const HajjUmrahTranslator = () => {
                 <div key={item.id} className="favorite-item">
                   <div className="favorite-original">
                     <strong>{getLanguageName(item.sourceLanguage)}:</strong>{" "}
-                    {item.sourceText}
+                    {item.sourceText}{" "}
                     <button
+                      className="actionButton"
                       onClick={() =>
                         speakText(item.sourceText, item.sourceLanguage)
                       }
@@ -640,8 +707,9 @@ const HajjUmrahTranslator = () => {
                   </div>
                   <div className="favorite-translation">
                     <strong>{getLanguageName(item.targetLanguage)}:</strong>{" "}
-                    {item.translatedText}
+                    {item.translatedText}{" "}
                     <button
+                      className="actionButton"
                       onClick={() =>
                         speakText(item.translatedText, item.targetLanguage)
                       }
@@ -651,6 +719,7 @@ const HajjUmrahTranslator = () => {
                   </div>
                   <div className="favorite-actions">
                     <button
+                      className="actionButton"
                       onClick={() => {
                         setInputText(item.sourceText);
                         setSourceLanguage(item.sourceLanguage);
@@ -660,7 +729,10 @@ const HajjUmrahTranslator = () => {
                     >
                       Use Again
                     </button>
-                    <button onClick={() => toggleFavorite(item)}>
+                    <button
+                      className="actionButton"
+                      onClick={() => toggleFavorite(item)}
+                    >
                       Remove from Favorites
                     </button>
                   </div>
@@ -668,29 +740,6 @@ const HajjUmrahTranslator = () => {
               ))}
             </div>
           )}
-        </div>
-      )}
-
-      {activeTab === "about" && (
-        <div className="about-container">
-          <h2>About</h2>
-          <div className="about-info">
-            <h3>About Hajj & Umrah Translator</h3>
-            <p>
-              This application is specifically designed to help pilgrims
-              communicate effectively during Hajj and Umrah.
-            </p>
-            <p>Features:</p>
-            <ul>
-              <li>
-                Translate between 10 languages commonly spoken by pilgrims
-              </li>
-              <li>Save favorite translations for quick access</li>
-              <li>Common religious phrases related to Hajj and Umrah</li>
-              <li>Text-to-speech capability for better communication</li>
-              <li>Translation history to recall previous conversations</li>
-            </ul>
-          </div>
         </div>
       )}
 
