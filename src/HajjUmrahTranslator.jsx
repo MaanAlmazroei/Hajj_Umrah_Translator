@@ -15,9 +15,8 @@ const HajjUmrahTranslator = () => {
   const [activeTab, setActiveTab] = useState("translate");
   const [selectedPhraseLanguage, setSelectedPhraseLanguage] = useState("en");
 
-  // API key
-  const API_URL = process.env.REACT_APP_API_URL;
-  const API_KEY = process.env.REACT_APP_API_KEY;
+  // API configuration
+  const LIBRETRANSLATE_API_URL = "http://localhost:5000/translate";
 
   // Common phrases for Hajj and Umrah
   const commonPhrases = [
@@ -226,58 +225,22 @@ const HajjUmrahTranslator = () => {
     setError("");
 
     try {
-      const response = await axios.post(`${API_URL}?key=${API_KEY}`, {
-        contents: [
-          {
-            parts: [
-              {
-                text: `Act as an expert Islamic translator for Hajj/Umrah. Translate this text from ${sourceLanguage} to ${targetLanguage} with:
+      const requestData = {
+        q: inputText,
+        source: sourceLanguage,
+        target: targetLanguage,
+      };
 
-1. **Terminology Rules**:
-- Preserve in original Arabic:
-  * Quranic verses/hadith
-  * Duas (e.g. "Labbayk Allahumma Labbayk")
-  * Ritual names (Tawaf, Sa'i, Wuquf)
-  * Holy sites (Mina, Arafat, Jamarat)
-- Translate other text naturally
+      const response = await axios.post(LIBRETRANSLATE_API_URL, requestData);
 
-2. **Format Requirements**:
-- Only output the translation
-- No explanations or notes
-- No bullet points or formatting
-- Keep Arabic script for Islamic terms
-
-3. **Special Cases**:
-- Times: Use prayer times ("after Dhuhr")
-- Directions: Use pilgrim terms ("near Maqam Ibrahim")
-- Standardize spellings ("Makkah" not "Mecca")
-
-4. **For not recognized words**:
--You must stick to one way of saying incorrect word
-
-Text to translate: "${inputText}"`,
-              },
-            ],
-          },
-        ],
-      });
-
-      // استخراج الترجمة
-      const translation = response.data.candidates[0].content.parts[0].text;
-      // تنظيف النص من أي علامات markdown أو نصوص إضافية
-      const cleanTranslation = translation
-        .replace(/[\*\#\-\_\`]/g, "") // إزالة علامات markdown
-        .replace(/^\s*[\n\r]+/g, "") // إزالة الأسطر الفارغة في البداية
-        .replace(/[\n\r]+\s*$/g, "") // إزالة الأسطر الفارغة في النهاية
-        .trim(); // إزالة المسافات الزائدة
-
-      setOutputText(cleanTranslation);
+      const translation = response.data.translatedText;
+      setOutputText(translation);
 
       // Check if this exact translation already exists in history
       const isDuplicate = history.some(
         (item) =>
           item.sourceText === inputText &&
-          item.translatedText === cleanTranslation &&
+          item.translatedText === translation &&
           item.sourceLanguage === sourceLanguage &&
           item.targetLanguage === targetLanguage
       );
@@ -287,7 +250,7 @@ Text to translate: "${inputText}"`,
         const newTranslation = {
           id: Date.now(),
           sourceText: inputText,
-          translatedText: cleanTranslation,
+          translatedText: translation,
           sourceLanguage,
           targetLanguage,
           timestamp: new Date().toISOString(),
@@ -301,12 +264,10 @@ Text to translate: "${inputText}"`,
     } catch (err) {
       console.error("Translation error:", err);
 
-      if (err.response && err.response.status === 401) {
-        setError("Authorization failed. Please check your API key.");
-      } else if (err.response && err.response.status === 429) {
-        setError("Too many requests. Please wait and try again.");
-      } else if (err.message.includes("Network Error")) {
-        setError("Network error. Please check your internet connection.");
+      if (err.message.includes("Network Error")) {
+        setError(
+          "Cannot connect to local LibreTranslate server. Please ensure it's running."
+        );
       } else {
         setError("Something went wrong. Please try again later.");
       }
