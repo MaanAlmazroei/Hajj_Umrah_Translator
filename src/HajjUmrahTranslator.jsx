@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { phraseCategories } from './services/phrases';
+import { phraseCategories } from "./services/phrases";
 
 const HajjUmrahTranslator = () => {
   const [inputText, setInputText] = useState("");
@@ -15,134 +15,10 @@ const HajjUmrahTranslator = () => {
   const [favorites, setFavorites] = useState([]);
   const [activeTab, setActiveTab] = useState("phrases");
   const [selectedPhraseLanguage, setSelectedPhraseLanguage] = useState("en");
-  const [selectedCategory, setSelectedCategory] = useState('navigation');
+  const [selectedCategory, setSelectedCategory] = useState("navigation");
 
   // API configuration
   const LIBRETRANSLATE_API_URL = "http://localhost:5000/translate";
-
-  // Common phrases for Hajj and Umrah
-  const commonPhrases = [
-    {
-      en: "Where is the Kaaba?",
-      ar: "أين الكعبة؟",
-      ur: "کعبہ کہاں ہے؟",
-      hi: "काबा कहाँ है?",
-      id: "Di mana Ka'bah?",
-      ms: "Di manakah Kaabah?",
-      tr: "Kabe nerede?",
-      fa: "کعبه کجاست؟",
-      fr: "Où est la Kaaba ?",
-      de: "Wo ist die Kaaba?",
-    },
-    {
-      en: "How do I perform Tawaf?",
-      ar: "كيف أؤدي الطواف؟",
-      ur: "طواف کیسے کریں؟",
-      hi: "तवाफ कैसे करें?",
-      id: "Bagaimana cara melakukan Tawaf?",
-      ms: "Bagaimana cara melakukan Tawaf?",
-      tr: "Tavaf nasıl yapılır?",
-      fa: "چگونه طواف کنم؟",
-      fr: "Comment effectuer le Tawaf ?",
-      de: "Wie führe ich den Tawaf durch?",
-    },
-    {
-      en: "Where is the nearest prayer area?",
-      ar: "أين أقرب مكان للصلاة؟",
-      ur: "قریب ترین نماز کی جگہ کہاں ہے؟",
-      hi: "निकटतम प्रार्थना स्थल कहाँ है?",
-      id: "Di mana tempat shalat terdekat?",
-      ms: "Di manakah tempat solat yang terdekat?",
-      tr: "En yakın namaz alanı nerede?",
-      fa: "نزدیک‌ترین محل نماز کجاست؟",
-      fr: "Où est la zone de prière la plus proche ?",
-      de: "Wo ist der nächste Gebetsbereich?",
-    },
-    {
-      en: "I need water",
-      ar: "أحتاج إلى ماء",
-      ur: "مجھے پانی چاہیے",
-      hi: "मुझे पानी चाहिए",
-      id: "Saya butuh air",
-      ms: "Saya perlukan air",
-      tr: "Suya ihtiyacım var",
-      fa: "من به آب نیاز دارم",
-      fr: "J'ai besoin d'eau",
-      de: "Ich brauche Wasser",
-    },
-    {
-      en: "Where can I find Zamzam water?",
-      ar: "أين يمكنني الحصول على ماء زمزم؟",
-      ur: "زمزم کا پانی کہاں سے مل سکتا ہے؟",
-      hi: "ज़मज़म का पानी कहाँ मिल सकता है?",
-      id: "Di mana saya bisa mendapatkan air Zamzam?",
-      ms: "Di mana saya boleh mendapatkan air Zamzam?",
-      tr: "Zemzem suyunu nereden bulabilirim?",
-      fa: "کجا می‌توانم آب زمزم پیدا کنم؟",
-      fr: "Où puis-je trouver de l'eau de Zamzam ?",
-      de: "Wo finde ich Zamzam-Wasser?",
-    },
-    {
-      en: "How do I get to Mina?",
-      ar: "كيف أصل إلى منى؟",
-      ur: "منیٰ تک کیسے پہنچوں؟",
-      hi: "मिना तक कैसे पहुंचें?",
-      id: "Bagaimana cara ke Mina?",
-      ms: "Bagaimana cara ke Mina?",
-      tr: "Mina'ya nasıl giderim?",
-      fa: "چگونه به منا بروم؟",
-      fr: "Comment aller à Mina ?",
-      de: "Wie komme ich nach Mina?",
-    },
-    {
-      en: "Which way to Arafat?",
-      ar: "أي طريق إلى عرفات؟",
-      ur: "عرفات کا راستہ کون سا ہے؟",
-      hi: "अरफात का रास्ता कौन सा है?",
-      id: "Jalan mana yang menuju Arafah?",
-      ms: "Jalan mana yang menuju ke Arafah?",
-      tr: "Arafat'a hangi yoldan gidilir?",
-      fa: "کدام مسیر به عرفات می‌رود؟",
-      fr: "Quel chemin pour Arafat ?",
-      de: "Welcher Weg führt nach Arafat?",
-    },
-    {
-      en: "I need medical assistance",
-      ar: "أحتاج إلى مساعدة طبية",
-      ur: "مجھے طبی امداد چاہیے",
-      hi: "मुझे चिकित्सा सहायता चाहिए",
-      id: "Saya butuh bantuan medis",
-      ms: "Saya perlukan bantuan perubatan",
-      tr: "Tıbbi yardıma ihtiyacım var",
-      fa: "من به کمک پزشکی نیاز دارم",
-      fr: "J'ai besoin d'assistance médicale",
-      de: "Ich brauche medizinische Hilfe",
-    },
-    {
-      en: "Where is the nearest bathroom?",
-      ar: "أين أقرب دورة مياه؟",
-      ur: "قریب ترین باتھ روم کہاں ہے؟",
-      hi: "निकटतम शौचालय कहाँ है?",
-      id: "Di mana kamar mandi terdekat?",
-      ms: "Di manakah tandas yang terdekat?",
-      tr: "En yakın tuvalet nerede?",
-      fa: "نزدیک‌ترین دستشویی کجاست؟",
-      fr: "Où sont les toilettes les plus proches ?",
-      de: "Wo ist die nächste Toilette?",
-    },
-    {
-      en: "How much does this cost?",
-      ar: "كم تكلفة هذا؟",
-      ur: "اس کی قیمت کتنی ہے؟",
-      hi: "इसकी कीमत कितनी है?",
-      id: "Berapa harganya?",
-      ms: "Berapakah harganya?",
-      tr: "Bu ne kadar?",
-      fa: "قیمت این چقدر است؟",
-      fr: "Combien ça coûte ?",
-      de: "Wie viel kostet das?",
-    },
-  ];
 
   // Available languages
   const languages = [
@@ -170,7 +46,7 @@ const HajjUmrahTranslator = () => {
       tr: "Navigasyon ve Yönler",
       fa: "ناوبری و مسیرها",
       fr: "Navigation et Directions",
-      de: "Navigation und Wegbeschreibungen"
+      de: "Navigation und Wegbeschreibungen",
     },
     rituals: {
       en: "Hajj & Umrah Rituals",
@@ -182,7 +58,7 @@ const HajjUmrahTranslator = () => {
       tr: "Hac ve Umre Ritüelleri",
       fa: "مناسک حج و عمره",
       fr: "Rituels du Hajj et de l'Umrah",
-      de: "Hajj & Umrah Rituale"
+      de: "Hajj & Umrah Rituale",
     },
     facilities: {
       en: "Facilities & Services",
@@ -194,7 +70,7 @@ const HajjUmrahTranslator = () => {
       tr: "Tesisler ve Hizmetler",
       fa: "تسهیلات و خدمات",
       fr: "Installations et Services",
-      de: "Einrichtungen und Dienstleistungen"
+      de: "Einrichtungen und Dienstleistungen",
     },
     emergency: {
       en: "Emergency & Medical",
@@ -206,7 +82,7 @@ const HajjUmrahTranslator = () => {
       tr: "Acil Durum ve Tıbbi",
       fa: "اورژانس و پزشکی",
       fr: "Urgence et Médical",
-      de: "Notfall und Medizin"
+      de: "Notfall und Medizin",
     },
     shopping: {
       en: "Shopping & Purchases",
@@ -218,8 +94,8 @@ const HajjUmrahTranslator = () => {
       tr: "Alışveriş ve Satın Alma",
       fa: "خرید و خریداری",
       fr: "Shopping et Achats",
-      de: "Einkaufen und Käufe"
-    }
+      de: "Einkaufen und Käufe",
+    },
   };
 
   // Load translation history from cookies

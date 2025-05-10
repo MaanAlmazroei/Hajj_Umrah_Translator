@@ -12,7 +12,7 @@ export const phraseCategories = {
         tr: "Kabe nerede?",
         fa: "کعبه کجاست؟",
         fr: "Où est la Kaaba ?",
-        de: "Wo ist die Kaaba?"
+        de: "Wo ist die Kaaba?",
       },
       {
         en: "How do I get to Mina?",
@@ -24,7 +24,7 @@ export const phraseCategories = {
         tr: "Mina'ya nasıl giderim?",
         fa: "چگونه به منا بروم؟",
         fr: "Comment aller à Mina ?",
-        de: "Wie komme ich nach Mina?"
+        de: "Wie komme ich nach Mina?",
       },
       {
         en: "Which way to Arafat?",
@@ -36,7 +36,7 @@ export const phraseCategories = {
         tr: "Arafat'a hangi yoldan gidilir?",
         fa: "کدام مسیر به عرفات می‌رود؟",
         fr: "Quel chemin pour Arafat ?",
-        de: "Welcher Weg führt nach Arafat?"
+        de: "Welcher Weg führt nach Arafat?",
       },
       {
         en: "Where is the Masjid al-Haram?",
@@ -48,7 +48,7 @@ export const phraseCategories = {
         tr: "Mescid-i Haram nerede?",
         fa: "مسجد الحرام کجاست؟",
         fr: "Où est la Mosquée sacrée ?",
-        de: "Wo ist die Heilige Moschee?"
+        de: "Wo ist die Heilige Moschee?",
       },
       {
         en: "How do I get to Safa and Marwa?",
@@ -60,7 +60,7 @@ export const phraseCategories = {
         tr: "Safa ve Merve'ye nasıl giderim?",
         fa: "چگونه به صفا و مروه بروم؟",
         fr: "Comment aller à Safa et Marwa ?",
-        de: "Wie komme ich zu Safa und Marwa?"
+        de: "Wie komme ich zu Safa und Marwa?",
       },
       {
         en: "Where is the nearest bus stop?",
@@ -72,7 +72,7 @@ export const phraseCategories = {
         tr: "En yakın otobüs durağı nerede?",
         fa: "نزدیک‌ترین ایستگاه اتوبوس کجاست؟",
         fr: "Où est l'arrêt de bus le plus proche ?",
-        de: "Wo ist die nächste Bushaltestelle?"
+        de: "Wo ist die nächste Bushaltestelle?",
       },
       {
         en: "Where is the nearest mosque?",
@@ -84,7 +84,7 @@ export const phraseCategories = {
         tr: "En yakın cami nerede?",
         fa: "نزدیک‌ترین مسجد کجاست؟",
         fr: "Où est la mosquée la plus proche ?",
-        de: "Wo ist die nächste Moschee?"
+        de: "Wo ist die nächste Moschee?",
       },
       {
         en: "How do I get to the Grand Mosque?",
@@ -96,7 +96,7 @@ export const phraseCategories = {
         tr: "Büyük Cami'ye nasıl giderim?",
         fa: "چگونه به مسجد الحرام بروم؟",
         fr: "Comment aller à la Grande Mosquée ?",
-        de: "Wie komme ich zur Großen Moschee?"
+        de: "Wie komme ich zur Großen Moschee?",
       },
       {
         en: "Where is the nearest metro station?",
@@ -108,9 +108,9 @@ export const phraseCategories = {
         tr: "En yakın metro istasyonu nerede?",
         fa: "نزدیک‌ترین ایستگاه مترو کجاست؟",
         fr: "Où est la station de métro la plus proche ?",
-        de: "Wo ist die nächste U-Bahn-Station?"
-      }
-    ]
+        de: "Wo ist die nächste U-Bahn-Station?",
+      },
+    ],
   },
   rituals: {
     title: "Hajj & Umrah Rituals",
@@ -125,7 +125,7 @@ export const phraseCategories = {
         tr: "Tavaf nasıl yapılır?",
         fa: "چگونه طواف کنم؟",
         fr: "Comment effectuer le Tawaf ?",
-        de: "Wie führe ich den Tawaf durch?"
+        de: "Wie führe ich den Tawaf durch?",
       },
       {
         en: "Where is the nearest prayer area?",
@@ -137,7 +137,7 @@ export const phraseCategories = {
         tr: "En yakın namaz alanı nerede?",
         fa: "نزدیک‌ترین محل نماز کجاست؟",
         fr: "Où est la zone de prière la plus proche ?",
-        de: "Wo ist der nächste Gebetsbereich?"
+        de: "Wo ist der nächste Gebetsbereich?",
       },
       {
         en: "How do I perform Sa'i?",
@@ -149,7 +149,7 @@ export const phraseCategories = {
         tr: "Sa'y nasıl yapılır?",
         fa: "چگونه سعی کنم؟",
         fr: "Comment effectuer le Sa'i ?",
-        de: "Wie führe ich den Sa'i durch?"
+        de: "Wie führe ich den Sa'i durch?",
       },
       {
         en: "When is the time for Wuquf?",
@@ -161,7 +161,7 @@ export const phraseCategories = {
         tr: "Vakfe zamanı ne zaman?",
         fa: "زمان وقوف چه وقت است؟",
         fr: "Quand est le moment du Wuquf ?",
-        de: "Wann ist die Zeit für Wuquf?"
+        de: "Wann ist die Zeit für Wuquf?",
       },
       {
         en: "How do I perform Rami?",
@@ -173,7 +173,7 @@ export const phraseCategories = {
         tr: "Rami nasıl yapılır?",
         fa: "چگونه رمی کنم؟",
         fr: "Comment effectuer le Rami ?",
-        de: "Wie führe ich den Rami durch?"
+        de: "Wie führe ich den Rami durch?",
       },
       {
         en: "Where can I perform Tahallul?",
@@ -185,7 +185,7 @@ export const phraseCategories = {
         tr: "Tahallul nerede yapılır?",
         fa: "کجا می‌توانم تحلل کنم؟",
         fr: "Où puis-je effectuer le Tahallul ?",
-        de: "Wo kann ich Tahallul durchführen?"
+        de: "Wo kann ich Tahallul durchführen?",
       },
       {
         en: "How do I perform Umrah?",
@@ -197,7 +197,7 @@ export const phraseCategories = {
         tr: "Umre nasıl yapılır?",
         fa: "چگونه عمره انجام دهم؟",
         fr: "Comment effectuer l'Umrah ?",
-        de: "Wie führe ich die Umrah durch?"
+        de: "Wie führe ich die Umrah durch?",
       },
       {
         en: "When is the next prayer?",
@@ -209,7 +209,7 @@ export const phraseCategories = {
         tr: "Bir sonraki namaz ne zaman?",
         fa: "نماز بعدی چه وقت است؟",
         fr: "Quand est la prochaine prière ?",
-        de: "Wann ist das nächste Gebet?"
+        de: "Wann ist das nächste Gebet?",
       },
       {
         en: "How do I perform Talbiyah?",
@@ -221,9 +221,9 @@ export const phraseCategories = {
         tr: "Telbiye nasıl yapılır?",
         fa: "چگونه تلبیه کنم؟",
         fr: "Comment faire la Talbiyah ?",
-        de: "Wie führe ich die Talbiyah durch?"
-      }
-    ]
+        de: "Wie führe ich die Talbiyah durch?",
+      },
+    ],
   },
   facilities: {
     title: "Facilities & Services",
@@ -238,7 +238,7 @@ export const phraseCategories = {
         tr: "En yakın tuvalet nerede?",
         fa: "نزدیک‌ترین دستشویی کجاست؟",
         fr: "Où sont les toilettes les plus proches ?",
-        de: "Wo ist die nächste Toilette?"
+        de: "Wo ist die nächste Toilette?",
       },
       {
         en: "Where can I find Zamzam water?",
@@ -250,7 +250,7 @@ export const phraseCategories = {
         tr: "Zemzem suyunu nereden bulabilirim?",
         fa: "کجا می‌توانم آب زمزم پیدا کنم؟",
         fr: "Où puis-je trouver de l'eau de Zamzam ?",
-        de: "Wo finde ich Zamzam-Wasser?"
+        de: "Wo finde ich Zamzam-Wasser?",
       },
       {
         en: "Where is the nearest medical center?",
@@ -262,7 +262,7 @@ export const phraseCategories = {
         tr: "En yakın sağlık merkezi nerede?",
         fa: "نزدیک‌ترین مرکز پزشکی کجاست؟",
         fr: "Où est le centre médical le plus proche ?",
-        de: "Wo ist das nächste medizinische Zentrum?"
+        de: "Wo ist das nächste medizinische Zentrum?",
       },
       {
         en: "Where can I find a prayer mat?",
@@ -274,7 +274,7 @@ export const phraseCategories = {
         tr: "Secdeyi nereden bulabilirim?",
         fa: "کجا می‌توانم جانماز پیدا کنم؟",
         fr: "Où puis-je trouver un tapis de prière ?",
-        de: "Wo finde ich eine Gebetsmatte?"
+        de: "Wo finde ich eine Gebetsmatte?",
       },
       {
         en: "Where is the nearest ATM?",
@@ -286,7 +286,7 @@ export const phraseCategories = {
         tr: "En yakın ATM nerede?",
         fa: "نزدیک‌ترین دستگاه خودپرداز کجاست؟",
         fr: "Où est le distributeur automatique le plus proche ?",
-        de: "Wo ist der nächste Geldautomat?"
+        de: "Wo ist der nächste Geldautomat?",
       },
       {
         en: "Where can I find a wheelchair?",
@@ -298,7 +298,7 @@ export const phraseCategories = {
         tr: "Tekerlekli sandalye nereden bulabilirim?",
         fa: "کجا می‌توانم ویلچر پیدا کنم؟",
         fr: "Où puis-je trouver un fauteuil roulant ?",
-        de: "Wo finde ich einen Rollstuhl?"
+        de: "Wo finde ich einen Rollstuhl?",
       },
       {
         en: "Where can I find a prayer room?",
@@ -310,7 +310,7 @@ export const phraseCategories = {
         tr: "Namaz odası nerede bulabilirim?",
         fa: "کجا می‌توانم اتاق نماز پیدا کنم؟",
         fr: "Où puis-je trouver une salle de prière ?",
-        de: "Wo finde ich einen Gebetsraum?"
+        de: "Wo finde ich einen Gebetsraum?",
       },
       {
         en: "Where is the nearest restaurant?",
@@ -322,7 +322,7 @@ export const phraseCategories = {
         tr: "En yakın restoran nerede?",
         fa: "نزدیک‌ترین رستوران کجاست؟",
         fr: "Où est le restaurant le plus proche ?",
-        de: "Wo ist das nächste Restaurant?"
+        de: "Wo ist das nächste Restaurant?",
       },
       {
         en: "Where can I find a currency exchange?",
@@ -334,9 +334,9 @@ export const phraseCategories = {
         tr: "Döviz bürosu nerede bulabilirim?",
         fa: "کجا می‌توانم صرافی پیدا کنم؟",
         fr: "Où puis-je trouver un bureau de change ?",
-        de: "Wo finde ich eine Wechselstube?"
-      }
-    ]
+        de: "Wo finde ich eine Wechselstube?",
+      },
+    ],
   },
   emergency: {
     title: "Emergency & Medical",
@@ -351,7 +351,7 @@ export const phraseCategories = {
         tr: "Tıbbi yardıma ihtiyacım var",
         fa: "من به کمک پزشکی نیاز دارم",
         fr: "J'ai besoin d'assistance médicale",
-        de: "Ich brauche medizinische Hilfe"
+        de: "Ich brauche medizinische Hilfe",
       },
       {
         en: "I need water",
@@ -363,7 +363,7 @@ export const phraseCategories = {
         tr: "Suya ihtiyacım var",
         fa: "من به آب نیاز دارم",
         fr: "J'ai besoin d'eau",
-        de: "Ich brauche Wasser"
+        de: "Ich brauche Wasser",
       },
       {
         en: "I feel dizzy",
@@ -375,7 +375,7 @@ export const phraseCategories = {
         tr: "Başım dönüyor",
         fa: "من احساس سرگیجه می‌کنم",
         fr: "Je me sens étourdi",
-        de: "Mir ist schwindelig"
+        de: "Mir ist schwindelig",
       },
       {
         en: "I lost my group",
@@ -387,7 +387,7 @@ export const phraseCategories = {
         tr: "Grubumu kaybettim",
         fa: "من گروه خود را گم کرده‌ام",
         fr: "J'ai perdu mon groupe",
-        de: "Ich habe meine Gruppe verloren"
+        de: "Ich habe meine Gruppe verloren",
       },
       {
         en: "I need first aid",
@@ -399,7 +399,7 @@ export const phraseCategories = {
         tr: "İlk yardıma ihtiyacım var",
         fa: "من به کمک‌های اولیه نیاز دارم",
         fr: "J'ai besoin de premiers soins",
-        de: "Ich brauche Erste Hilfe"
+        de: "Ich brauche Erste Hilfe",
       },
       {
         en: "I lost my passport",
@@ -411,7 +411,7 @@ export const phraseCategories = {
         tr: "Pasaportumu kaybettim",
         fa: "من پاسپورتم را گم کرده‌ام",
         fr: "J'ai perdu mon passeport",
-        de: "Ich habe meinen Pass verloren"
+        de: "Ich habe meinen Pass verloren",
       },
       {
         en: "I need an ambulance",
@@ -423,7 +423,7 @@ export const phraseCategories = {
         tr: "Ambulansa ihtiyacım var",
         fa: "من به آمبولانس نیاز دارم",
         fr: "J'ai besoin d'une ambulance",
-        de: "Ich brauche einen Krankenwagen"
+        de: "Ich brauche einen Krankenwagen",
       },
       {
         en: "I lost my wallet",
@@ -435,7 +435,7 @@ export const phraseCategories = {
         tr: "Cüzdanımı kaybettim",
         fa: "من کیف پولم را گم کرده‌ام",
         fr: "J'ai perdu mon portefeuille",
-        de: "Ich habe meine Brieftasche verloren"
+        de: "Ich habe meine Brieftasche verloren",
       },
       {
         en: "I need a doctor",
@@ -447,9 +447,9 @@ export const phraseCategories = {
         tr: "Doktora ihtiyacım var",
         fa: "من به پزشک نیاز دارم",
         fr: "J'ai besoin d'un médecin",
-        de: "Ich brauche einen Arzt"
-      }
-    ]
+        de: "Ich brauche einen Arzt",
+      },
+    ],
   },
   shopping: {
     title: "Shopping & Purchases",
@@ -464,7 +464,7 @@ export const phraseCategories = {
         tr: "Bu ne kadar?",
         fa: "قیمت این چقدر است؟",
         fr: "Combien ça coûte ?",
-        de: "Wie viel kostet das?"
+        de: "Wie viel kostet das?",
       },
       {
         en: "Do you accept credit cards?",
@@ -476,7 +476,7 @@ export const phraseCategories = {
         tr: "Kredi kartı kabul ediyor musunuz?",
         fa: "آیا کارت اعتباری قبول می‌کنید؟",
         fr: "Acceptez-vous les cartes de crédit ?",
-        de: "Akzeptieren Sie Kreditkarten?"
+        de: "Akzeptieren Sie Kreditkarten?",
       },
       {
         en: "Can I get a discount?",
@@ -488,7 +488,7 @@ export const phraseCategories = {
         tr: "İndirim alabilir miyim?",
         fa: "آیا می‌توانم تخفیف بگیرم؟",
         fr: "Puis-je avoir une réduction ?",
-        de: "Kann ich einen Rabatt bekommen?"
+        de: "Kann ich einen Rabatt bekommen?",
       },
       {
         en: "Where can I buy Ihram?",
@@ -500,7 +500,7 @@ export const phraseCategories = {
         tr: "İhram nereden alabilirim?",
         fa: "کجا می‌توانم احرام بخرم؟",
         fr: "Où puis-je acheter l'Ihram ?",
-        de: "Wo kann ich Ihram kaufen?"
+        de: "Wo kann ich Ihram kaufen?",
       },
       {
         en: "Do you have prayer beads?",
@@ -512,7 +512,7 @@ export const phraseCategories = {
         tr: "Tesbihiniz var mı?",
         fa: "آیا تسبیح دارید؟",
         fr: "Avez-vous des chapelets de prière ?",
-        de: "Haben Sie Gebetsperlen?"
+        de: "Haben Sie Gebetsperlen?",
       },
       {
         en: "Where can I buy dates?",
@@ -524,7 +524,7 @@ export const phraseCategories = {
         tr: "Hurma nereden alabilirim?",
         fa: "کجا می‌توانم خرما بخرم؟",
         fr: "Où puis-je acheter des dattes ?",
-        de: "Wo kann ich Datteln kaufen?"
+        de: "Wo kann ich Datteln kaufen?",
       },
       {
         en: "Do you have prayer rugs?",
@@ -536,7 +536,7 @@ export const phraseCategories = {
         tr: "Secde yastığınız var mı?",
         fa: "آیا جانماز دارید؟",
         fr: "Avez-vous des tapis de prière ?",
-        de: "Haben Sie Gebetsteppiche?"
+        de: "Haben Sie Gebetsteppiche?",
       },
       {
         en: "Where can I buy Abaya?",
@@ -548,7 +548,7 @@ export const phraseCategories = {
         tr: "Abiye nereden alabilirim?",
         fa: "کجا می‌توانم عبایه بخرم؟",
         fr: "Où puis-je acheter une Abaya ?",
-        de: "Wo kann ich eine Abaya kaufen?"
+        de: "Wo kann ich eine Abaya kaufen?",
       },
       {
         en: "Do you have Islamic books?",
@@ -560,8 +560,8 @@ export const phraseCategories = {
         tr: "İslami kitaplarınız var mı?",
         fa: "آیا کتاب‌های اسلامی دارید؟",
         fr: "Avez-vous des livres islamiques ?",
-        de: "Haben Sie islamische Bücher?"
-      }
-    ]
-  }
-}; 
+        de: "Haben Sie islamische Bücher?",
+      },
+    ],
+  },
+};

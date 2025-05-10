@@ -267,7 +267,6 @@ body {
   padding: 14px;
   background-color: #f9fcff;
   transition: 0.2s;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -287,7 +286,7 @@ body {
 }
 
 .phrase-arabic {
-  font-family: 'Scheherazade', serif;
+  font-family: "Scheherazade", serif;
   font-size: 1.3rem;
   margin-bottom: 8px;
   color: #222;
