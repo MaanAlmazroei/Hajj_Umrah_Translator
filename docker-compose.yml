@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: libretranslate
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - LT_LOAD_ONLY=ar,en,ur,hi,id,ms,tr,fa,fr,de
+      - LT_DISABLE_WEB_UI=false
+      - LT_DISABLE_API_KEYS=true
+      - ARGOS_TRANSLATE_PACKAGES_DIR=/app/data
+      - HOME=/app
+    restart: unless-stopped
