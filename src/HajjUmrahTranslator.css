@@ -237,15 +237,28 @@ body {
 
 .phrases-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.phrases-controls {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.category-selector,
+.phrase-language-selector {
+  min-width: 200px;
 }
 
 .phrases-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 15px;
   margin-top: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .phrase-card {
@@ -254,32 +267,54 @@ body {
   padding: 14px;
   background-color: #f9fcff;
   transition: 0.2s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .phrase-card:hover {
   background-color: #effaff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .phrase-text {
   font-weight: 600;
   margin-bottom: 6px;
+  font-size: 1.1rem;
+  color: #004a80;
 }
 
 .phrase-arabic {
-  font-family: "Scheherazade", serif;
-  font-size: 1.1rem;
+  font-family: 'Scheherazade', serif;
+  font-size: 1.3rem;
   margin-bottom: 8px;
   color: #222;
-  direction: rtl;
+  text-align: right;
+}
+
+.phrase-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
 }
 
 .phrase-actions button {
   background-color: #d6ebff;
-  margin-right: 10px;
   border: none;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.phrase-actions button:hover {
+  background-color: #b8dfff;
 }
 
 /* === History & Favorites === */
@@ -323,15 +358,4 @@ body {
   font-size: 0.85rem;
   color: #666;
   margin-top: 4px;
-}
-
-/* === Offline Mode === */
-.offline-note {
-  margin-top: 30px;
-  background-color: #f0f8ff;
-  padding: 15px;
-  border: 1px solid #b6dfff;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  color: #004a80;
 }

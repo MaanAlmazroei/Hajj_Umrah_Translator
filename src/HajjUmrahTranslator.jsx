@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { phraseCategories } from './services/phrases';
 
 const HajjUmrahTranslator = () => {
   const [inputText, setInputText] = useState("");
@@ -12,8 +13,9 @@ const HajjUmrahTranslator = () => {
   const [error, setError] = useState("");
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [activeTab, setActiveTab] = useState("translate");
+  const [activeTab, setActiveTab] = useState("phrases");
   const [selectedPhraseLanguage, setSelectedPhraseLanguage] = useState("en");
+  const [selectedCategory, setSelectedCategory] = useState('navigation');
 
   // API configuration
   const LIBRETRANSLATE_API_URL = "http://localhost:5000/translate";
@@ -155,6 +157,70 @@ const HajjUmrahTranslator = () => {
     { code: "fr", name: "French" },
     { code: "de", name: "German" },
   ];
+
+  // Add this new object for category titles in different languages
+  const categoryTitles = {
+    navigation: {
+      en: "Navigation & Directions",
+      ar: "التوجيه والاتجاهات",
+      ur: "رہنمائی اور سمت",
+      hi: "नेविगेशन और दिशाएं",
+      id: "Navigasi & Arah",
+      ms: "Navigasi & Arah",
+      tr: "Navigasyon ve Yönler",
+      fa: "ناوبری و مسیرها",
+      fr: "Navigation et Directions",
+      de: "Navigation und Wegbeschreibungen"
+    },
+    rituals: {
+      en: "Hajj & Umrah Rituals",
+      ar: "مناسك الحج والعمرة",
+      ur: "حج اور عمرہ کے مناسک",
+      hi: "हज और उमरा के अनुष्ठान",
+      id: "Ritual Haji & Umrah",
+      ms: "Ritual Haji & Umrah",
+      tr: "Hac ve Umre Ritüelleri",
+      fa: "مناسک حج و عمره",
+      fr: "Rituels du Hajj et de l'Umrah",
+      de: "Hajj & Umrah Rituale"
+    },
+    facilities: {
+      en: "Facilities & Services",
+      ar: "المرافق والخدمات",
+      ur: "سہولیات اور خدمات",
+      hi: "सुविधाएं और सेवाएं",
+      id: "Fasilitas & Layanan",
+      ms: "Kemudahan & Perkhidmatan",
+      tr: "Tesisler ve Hizmetler",
+      fa: "تسهیلات و خدمات",
+      fr: "Installations et Services",
+      de: "Einrichtungen und Dienstleistungen"
+    },
+    emergency: {
+      en: "Emergency & Medical",
+      ar: "الطوارئ والطبية",
+      ur: "ہنگامی اور طبی",
+      hi: "आपातकालीन और चिकित्सा",
+      id: "Darurat & Medis",
+      ms: "Kecemasan & Perubatan",
+      tr: "Acil Durum ve Tıbbi",
+      fa: "اورژانس و پزشکی",
+      fr: "Urgence et Médical",
+      de: "Notfall und Medizin"
+    },
+    shopping: {
+      en: "Shopping & Purchases",
+      ar: "التسوق والمشتريات",
+      ur: "خریداری اور خرید",
+      hi: "खरीदारी और खरीद",
+      id: "Belanja & Pembelian",
+      ms: "Membeli-belah & Pembelian",
+      tr: "Alışveriş ve Satın Alma",
+      fa: "خرید و خریداری",
+      fr: "Shopping et Achats",
+      de: "Einkaufen und Käufe"
+    }
+  };
 
   // Load translation history from cookies
   useEffect(() => {
@@ -554,24 +620,39 @@ Text to translate: "${inputText}"`,
         <div className="phrases-container">
           <div className="phrases-header">
             <h2>Common Hajj & Umrah Phrases</h2>
-            <div className="phrase-language-selector">
-              <select
-                className="select"
-                value={selectedPhraseLanguage}
-                onChange={(e) => setSelectedPhraseLanguage(e.target.value)}
-              >
-                {languages
-                  .filter((lang) => lang.code !== "ar")
-                  .map((lang) => (
-                    <option key={`phrase-${lang.code}`} value={lang.code}>
-                      {lang.name}
+            <div className="phrases-controls">
+              <div className="category-selector">
+                <select
+                  className="select"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  {Object.entries(phraseCategories).map(([key, category]) => (
+                    <option key={key} value={key}>
+                      {categoryTitles[key][selectedPhraseLanguage]}
                     </option>
                   ))}
-              </select>
+                </select>
+              </div>
+              <div className="phrase-language-selector">
+                <select
+                  className="select"
+                  value={selectedPhraseLanguage}
+                  onChange={(e) => setSelectedPhraseLanguage(e.target.value)}
+                >
+                  {languages
+                    .filter((lang) => lang.code !== "ar")
+                    .map((lang) => (
+                      <option key={`phrase-${lang.code}`} value={lang.code}>
+                        {lang.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
           </div>
           <div className="phrases-list">
-            {commonPhrases.map((phrase, index) => (
+            {phraseCategories[selectedCategory].phrases.map((phrase, index) => (
               <div
                 key={index}
                 className="phrase-card"
@@ -742,14 +823,6 @@ Text to translate: "${inputText}"`,
           )}
         </div>
       )}
-
-      <div className="offline-note">
-        <h3>Offline Mode Features</h3>
-        <p>
-          Common phrases, favorites, and history are available offline.
-          Translation requires internet connection.
-        </p>
-      </div>
     </div>
   );
 };
