@@ -647,7 +647,7 @@ body {
 }
 
 .phrase-arabic {
-  font-family: 'Scheherazade', serif;
+  font-family: "Scheherazade", serif;
   font-size: 1.3rem;
   margin-bottom: 8px;
   color: #222;
@@ -728,15 +728,15 @@ body {
   .translationBoxes {
     flex-direction: column;
   }
-  
+
   .translationBoxes > div {
     min-width: 100%;
   }
-  
+
   .phrases-list {
     grid-template-columns: 1fr;
   }
-  
+
   .translateBtn {
     width: 100%;
   }
